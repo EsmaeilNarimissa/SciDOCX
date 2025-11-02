@@ -1,17 +1,18 @@
-# DeepSeek-OCR: Scientific Document Conversion Pipeline
+# SciDOCX: Scientific Document Conversion Pipeline
 
-A high-fidelity OCR-to-Markdown and OCR-to-DOCX pipeline powered by DeepSeek-OCR, Pandoc, and Python.  
-It converts scientific PDFs — including equations, tables, and figures — into clean, editable Word or Markdown files with full layout preservation.
+A high-fidelity OCR-to-Markdown and OCR-to-DOCX pipeline powered by **DeepSeek-OCR** and **Qwen2-VL**.  
+It accurately converts scientific PDFs — including **equations, tables, and figures** — into clean, editable Word or Markdown files with full layout and semantic preservation.
 
 ## Key Features
 
-- **Accurate OCR:** Uses DeepSeek-OCR with GPU acceleration for near human-level text recognition
-- **Scientific Awareness:** Preserves LaTeX-style equations, tables, and figure captions
-- **Markdown and DOCX Export:** Converts to GitHub-flavored Markdown and fully editable Word documents
-- **Embedded Figures:** Automatically extracts and embeds figures directly into the DOCX file
-- **VLM Enrichment:** Qwen2-VL-2B-Instruct for accurate scientific figure descriptions (MM-RAG pipeline)
-- **End-to-End Automation:** One command to process a folder of PDFs
-- **Cross-Platform:** Works via Docker or locally using Python/UV without containers
+- **Accurate OCR:** Powered by DeepSeek-OCR with GPU acceleration for near human-level text recognition.  
+- **Scientific Awareness:** Preserves LaTeX-style equations, tables, and figure captions with full layout integrity.  
+- **Flexible Export:** Generates both GitHub-flavored Markdown and fully editable Word (DOCX) outputs.  
+- **Embedded Figures:** Automatically extracts and inserts figures into the DOCX document with proper captions.  
+- **VLM Enrichment:** Integrates Qwen2-VL-2B-Instruct for precise, context-aware scientific figure descriptions (MM-RAG pipeline).  
+- **End-to-End Automation:** Processes entire folders of PDFs in a single command.  
+- **Cross-Platform Execution:** Runs seamlessly via Docker (GPU) or locally with Python/UV without containerization.
+
 
 ## Quick Start Guide
 
