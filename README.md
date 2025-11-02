@@ -3,10 +3,10 @@
 ![Docker GPU Ready](https://img.shields.io/badge/docker-GPU%20Ready-blue.svg)
 ![CUDA](https://img.shields.io/badge/cuda-12.1+-brightgreen.svg)
 
-**Version 1.0 (2025-03)**  
+**Version 1.0 (2025-11)**  
 Tested on Python 3.10 / CUDA 12.1
 
-## SciDOCX: Scientific Document Conversion and MM-RAG Pipeline
+# SciDOCX: Scientific Document Conversion and MM-RAG Pipeline
 
 A high-fidelity, GPU-accelerated system for scientific PDFs that performs **two complementary tasks**:
 
