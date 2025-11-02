@@ -297,10 +297,16 @@ python pdf_to_mmrag_json.py --use-vlm
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Contact
+
+For questions, suggestions, or collaborations, reach out at:
+**esmaeil.narimissa@gmail.com**
+
 ## Acknowledgments
 
 - **[DeepSeek-AI](https://github.com/deepseek-ai)** for the DeepSeek-OCR model
 - **[Qwen Team (Alibaba)](https://github.com/QwenLM/Qwen2-VL)** for Qwen2-VL-2B-Instruct VLM
 - **[Pandoc](https://pandoc.org/)** for document conversion
+- **[Bogdanovich77](https://github.com/Bogdanovich77/DeekSeek-OCR---Dockerized-API)** for Dockerized API implementation inspiration
 - **[PyMuPDF](https://pymupdf.readthedocs.io/)** for PDF processing
 - **[HuggingFace Transformers](https://huggingface.co/transformers)** for model infrastructure
