@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.pyc
+.coverage
+htmlcov/
+.tox/
+.cache/
+.mypy_cache/
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.venv-broken/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System
+.DS_Store
+Thumbs.db
+*.log
+*.lnk
+*.url
+desktop.ini
+
+# Environment and configuration
+.env
+.env.local
+.env.production
+config.local.py
+settings.local.py
+
+# Temporary files
+temp/
+*.tmp
+*-packages.txt
+test_*.py
+verify_*.py
+cleanup_*.txt
+find_*.ps1
+
+# Local overrides
+docker-compose.override.yml
+
+# User data and generated outputs
+data/input/*
+!data/input/.gitkeep
+data/output/*
+!data/output/.gitkeep
+data/images/*
+!data/images/.gitkeep
+data/mmrag-output/*
+!data/mmrag-output/.gitkeep
+
+# Model weights (multi-GB, users download via huggingface-cli)
+models/deepseek-ai/*
+!models/deepseek-ai/.gitkeep
+models/Qwen/*
+!models/Qwen/.gitkeep
+
+# Upstream code (users clone separately or add as submodule)
+DeepSeek-OCR/
+
+# Keep essential directories structure but ignore temp contents
+outputs/*
+!outputs/.gitkeep

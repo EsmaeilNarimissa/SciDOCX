@@ -1,0 +1,35 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Image and PDF processing
+pymupdf==1.24.0
+img2pdf==0.5.1
+pillow==10.2.0
+pypandoc==1.13
+
+# Utilities
+numpy==1.26.4
+requests==2.31.0
+einops==0.7.0
+easydict==1.13
+addict==2.4.0
+tqdm==4.66.2
+
+# Hugging Face and OCR
+transformers==4.36.2
+tokenizers==0.15.0
+sentencepiece==0.2.0
+
+# VLM dependencies (optional - for Florence-2 figure descriptions)
+# Uncomment if using --use-vlm flag:
+# torch>=2.0.0
+# timm>=0.9.0
+
+# vLLM and model serving
+vllm==0.2.7
+
+# API documentation
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.6

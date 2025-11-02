@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+outputs/
+models/
+*.log
+*.ipynb
+.DS_Store
+Thumbs.db
+.git/
+.gitignore
+.env
+*.md
+*.pdf
+*.jpg
+*.jpeg
+*.png
+.vscode/
