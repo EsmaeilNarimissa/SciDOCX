@@ -54,6 +54,9 @@ curl http://localhost:8001/health
 # Install dependencies with UV
 uv pip install -r requirements.txt
 
+# Clone DeepSeek-OCR repository (required for local setup)
+git clone https://github.com/deepseek-ai/DeepSeek-OCR.git DeepSeek-OCR
+
 # Set environment variables
 export PYTHONPATH="$PWD/DeepSeek-OCR/DeepSeek-OCR-master/DeepSeek-OCR-vllm:$PYTHONPATH"
 export MODEL_PATH="$PWD/models/deepseek-ai/DeepSeek-OCR"
@@ -132,6 +135,7 @@ DS-OCR/
 **Local:** Set environment variables:
 ```bash
 # Set Python path to include DeepSeek-OCR code
+# Note: DeepSeek-OCR repository must be cloned first (see setup instructions)
 export PYTHONPATH="$PWD/DeepSeek-OCR/DeepSeek-OCR-master/DeepSeek-OCR-vllm:$PYTHONPATH"
 
 # Point to the model directory
