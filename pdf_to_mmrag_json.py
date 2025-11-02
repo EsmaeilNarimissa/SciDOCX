@@ -15,6 +15,7 @@ import re
 import json
 import logging
 import argparse
+import warnings
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 from difflib import SequenceMatcher
@@ -24,6 +25,18 @@ from PIL import Image
 
 # Import shared utilities
 import shared_utils
+
+# Suppress warnings for cleaner output
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", message=".*torch_dtype.*deprecated.*")
+warnings.filterwarnings("ignore", message=".*AutoModelForVision2Seq.*deprecated.*")
+warnings.filterwarnings("ignore", message=".*generation flags.*not valid.*")
+warnings.filterwarnings("ignore", message=".*fast processor.*breaking change.*")
+warnings.filterwarnings("ignore", message=".*TRANSFORMERS_VERBOSITY.*")
+
+# Set environment variable to suppress transformers warnings
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 
 # Optional VLM imports (lazy loaded)
 try:
