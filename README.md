@@ -225,6 +225,24 @@ export CUDA_VISIBLE_DEVICES="0"
 
 ---
 
+## 📊 Evaluation Framework
+
+For comprehensive benchmarking results and academic evaluation, see:
+
+- **Evaluation Branch**: `git checkout evaluation-framework`
+- **Evaluation README**: [test/README.md](evaluation-framework/test/README.md)  
+- **Evaluation Record**: [PR #2](https://github.com/EsmaeilNarimissa/SciDOCX/pull/2)
+
+The evaluation framework includes:
+- Cross-domain testing across 5 scientific disciplines
+- Baseline comparisons with Tesseract and PDFMiner
+- Performance metrics (WER, coverage, retrieval accuracy)
+- Complete reproducibility artifacts and datasets
+
+**Key Results**: 183.4% figure coverage, 0.309 WER vs PDFMiner, 100% retrieval hit rate
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
