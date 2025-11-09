@@ -1,0 +1,121 @@
+Dynamics and Rheology of Polymer Melts via Hierarchical
+Atomistic, Coarse-grained, and Slip-spring Simulations
+
+@ @
+Alireza F. Behbahanil ©, Ludwig Schneider?’®, Anastassia Rissanou', Anthony Chazirakis! , Petra
+
+Bacoval, Pritam Kumar Janal, Wei Lil, Manolis Doxastakis!, Patrycja Politiska®, Craig Burkhart,
+«Lp
+
+Marcus Miiller***, and Vagelis A. Harmandaris
+
+{ Institute of Applied and Computational Mathematics, Foundation for Research and Technology - Hellas,
+Heraklion GR-71110, Greece
+{t Institute for Theoretical Physics, Georg-August University Gottingen, Germany
+{ Department of Chemical and Biomolecular Engineering, University of Tennessee, Knoxville, Tennessee
+37996, USA
+§ Goodyear S.A., Avenue Gordon Smith, Colmar-Berg L-7750, Luxembourg
+|| The Goodyear Tire and Rubber Company, 142 Goodyear Blud., Akron, Ohio 44305, USA
+1 Department of Mathematics and Applied Mathematics, University of Crete, Heraklion GR-71110, Greece
+# Computation-based Science and Technology Research Center, The Cyprus Institute, Nicosia 2121, Cyprus
+
+@ A. F. Behbahani and L. Schneider contributed equally to this work
+* E-mail: mmueller@theorie.physik.uni-goettingen.de, harman@uoc.gr
+
+Abstract
+
+A hierarchical (triple scale) simulation methodology is presented for the prediction of the dynamical
+and rheological properties of high molecular weight entangled polymer melts. The methodology consists
+of atomistic, moderately coarse-grained (mCG), and highly coarse-grained slip-spring (SLSP) simulations.
+At the mCG level, a few chemically bonded atoms are lumped into one coarse-grained bead. At this
+level, the chemical identity of the underlying atomistic system, and the interchain topological constraints
+(entanglements) are preserved. The mCG interaction potentials are derived by matching local structural
+distributions of the mCG model to those of the atomistic model through iterative Boltzmann inversion.
+For matching mCG and atomistic dynamics, the mCG time is scaled by a time scaling factor, which
+compensates for the lower monomeric friction coefficient of the mCG model than that of the atomistic
+one. At the SLSP level, multiple Kuhn segments of a polymer chain are represented by one coarse-grained
+bead. The very soft nonbonded interactions between beads do not prevent chain crossing and, hence,
+can not capture entanglements. The topological constraints are represented by slip-springs, restricting
+the lateral motion of polymer chains. A compensating pair potential is used in the SLSP model, to
+keep the static macromolecular properties unaltered upon the introduction of slip-springs. The static
+and kinetic parameters of the SLSP model are determined based on the lower level simulation models.
+Particularly, matching the orientational autocorrelation of the end-to-end vector, we determine the
+number of slip-springs and calibrate the timescale of the SLSP model. As the test case, the hierarchical
+methodology is applied to cis-1,4-polybutadiene (cPB) at 413 K. Dynamical single-chain and linear
+viscoelastic properties of cPB melts are calculated for a broad range of molecular weights, ranging from
+unentangled to well-entangled chains. The calculations are compared, and found in good agreement, with
+experimental data from the literature.
+
+2101.08985v1 [cond-mat.soft] 22 Jan 2021
+
+arXiv
+
+1 Introduction
+
+Nowadays, with the progress of available computational power, molecular simulations have become a powerful
+and predictive tool for the investigation of the chain dynamics and the rheology of polymer materials. However,
+molecular simulations of polymer materials of industrial relevance are not straightforward because of the
+extremely broad range of time and length scales involved in macromolecular chains of high molecular weights.
+As an example, relevant timescales of a polymer melt extend from the periods of covalent bond vibrations
+
+(= 10714 s) to times of entangled chain relaxation that might be of the order of seconds, even at temperatures
+well above the glass transition temperature, T,. Moreover, relevant length scales of a polymer material cover
+atomic sizes (10~!° m) up to the size of a polymer chain (= 10~8-10~7 m) and possibly larger length scales
+that characterize the structure of hybrid multiphase systems. Therefore, a single modeling approach cannot
+simultaneously address all relevant length and time scales, and it is necessary to combine simulation methods
+of different spatiotemporal scales“
+
+The natural route for increasing the lengt
+grained (CG) representation of polymer chain. A CG model is commonly obtained by lumping a group of
+chemically bonded atoms into one superatom (CG bead or particle) and tuning the CG model to reproduce
+some target structural, dynamical, and/or thermodynamic properties of the fine-grained, more detailed,
+model. A systematic parametrization of CG models includes deriving interaction potentials between CG beads
+and/or calibration of the CG model parameters using data from the more detailed atomistic simulations;
+such a procedure is typically called ” bottom-up coarse-graining” .
+
+An alternative to the systematic bottom-up derivation of coarse-grained representations are top-down
+CG models In these approaches, a universal representation (e. g., a bead-spring model) is adopted tha’
+only incorporates the relevant interactions, such as the connectivity along the macromolecular backbone
+and the segmental repulsion, limiting fluctuations of the melt density — in a computationally efficient way.
+The strengths of these relevant interactions are related to experimentally measurable quantities, such as the
+spatial extent of the macromolecules in a melt and the isothermal compressibility. Comparing to experimental
+data or lower-scale simulations, the strength of the interactions or time and length scales are identified for a
+specific material. Universal models are also widely used for studying (in a qualitative manner) the general
+behavior of polymer materials.
+
+Because of the averaging over microscopic details, CG potentials are softer than the corresponding
+fine-grained potentials. However, at low or moderate degrees of coarse-graining (lumping a few atoms in a
+CG bead) the interactions remain strong enough to prevent chain crossing and to preserve entanglement
+constraints between polymer chains. So far, various moderately coarse-grained models, which stay close
+to the microscopic structure, have been proposed in the literature for different polymers through differen
+coarse-graining procedures. Typical examples include the works by Tschép et al.4I8| who introduced a
+systematic coarse-graining procedure and applied it to derive CG potentials for polycarbonates. They
+generated long atomistic chains, with a proper distribution of torsional angles, through Monte-Carlo (MC)
+simulations and mapped them onto a CG representation by replacing groups of atoms with CG beads. The
+effective bonded potentials (bond length, angle, torsion) of the CG chain were calculated from the Boltzmann
+inverse of the corresponding distributions. Finally, the nonbonded interactions between CG beads were
+adjusted to reproduce the correct density of the polymer. Reith et al introduced an iterative procedure,
+called iterative Boltzmann inversion, for deriving effective CG potentials. They also determined nonbonded
+CG interactions by matching radial distribution function (RDF) of the CG melt to that of the atomistic
+melt. Harmandaris and collaborators#2#2 devised CG models for polystyrene (PS) chains and studied
+the structural and dynamical properties of PS melts. Ohkuma and Kremer2l studied the properties of two
+different CG models (with and without pressure correction) for cis-1,4-polyisoprene. Kempfer et al.) used
+a trajectory-matching approach for coarse-graining of cis-1,4-polybutadiene (cPB). In their approach, the
+parameters of the CG model were obtained by optimizing the matching between the trajectory of the CG
+model, produced through DPD simulation, and the reference trajectory of the more detailed model. Recently,
+Shahidi et all used an inverse Monte Carlo method for constructing local-density dependent CG potentials
+for cis-1,4-polyisoprene; in addition to the conventional bonded and pair distributions, the derived CG
+potentials reproduce the distribution of the nearest-neighbors of the underlying atomistic model. Moderately
+CG models have also been used to study interfacial polymer systems, like polyamide/ graphene #4) PS/ gold24
+and polyisoprene/ graphite! systems.
+
+At high degrees of coarse-graining (lumping many atoms in one CG bead), which are necessary for the
+simulation of high molecular weight polymers, pair interactions are very soft and they can not prevent chain
+i d hence, the model fails to capture the topological constraints (entanglements) between polymer
+Therefore, to preserve entanglement effects, which are key features of polymer dynamics,
+additional constraints should be added to the model! To reintroduce the reptation dynamics into
+highly CG models, single-chain and multi-chain slip-link2224 and slip-spring (SLSP)H828185) models have
+been developed.
+
+nd time scales accessible to simulations is to use a coarse-
+

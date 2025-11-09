@@ -1,0 +1,6 @@
+pdf,domain,figures_found,tables_found,equations_found,figures_expected,tables_expected,equations_expected,figures_coverage(%),tables_coverage(%),equations_coverage(%)
+Biology (2023).pdf,Biology,3,1,2,6,2,5,50.0,50.0,40.0
+Chemistry (2024).pdf,Chemistry,13,5,8,5,3,4,260.0,166.7,200.0
+Physics (2025).pdf,Physics,4,0,20,7,1,10,57.1,0.0,200.0
+Polymer Physics (2021).pdf,Polymer Physics,24,0,24,8,2,12,300.0,0.0,200.0
+Computer Science (2025 DeepSeek-OCR).pdf,Computer Science,15,4,6,6,2,3,250.0,200.0,200.0

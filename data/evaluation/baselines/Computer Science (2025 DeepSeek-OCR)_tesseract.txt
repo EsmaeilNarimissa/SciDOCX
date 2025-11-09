@@ -1,0 +1,114 @@
+arXiv:2510.18234v1 [cs.CV] 21 Oct 2025
+
+wy deepseek
+
+DeepSeek-OCR: Contexts Optical Compression
+
+Haoran Wei, Yaofeng Sun, Yukun Li
+
+DeepSeek-AI
+
+Abstract
+
+We present DeepSeek-OCR as an initial investigation into the feasibility of compressing long
+contexts via optical 2D mapping. DeepSeek-OCR consists of two components: DeepEncoder
+and DeepSeek3B-MoE-A570M as the decoder. Specifically, DeepEncoder serves as the core
+engine, designed to maintain low activations under high-resolution input while achieving high
+compression ratios to ensure an optimal and manageable number of vision tokens. Experiments
+show that when the number of text tokens is within 10 times that of vision tokens (i.e., a
+compression ratio < 10x), the model can achieve decoding (OCR) precision of 97%. Even at a
+compression ratio of 20x, the OCR accuracy still remains at about 60%. This shows considerable
+promise for research areas such as historical long-context compression and memory forgetting
+mechanisms in LLMs. Beyond this, DeepSeek-OCR also demonstrates high practical value.
+On OmniDocBench, it surpasses GOT-OCR2.0 (256 tokens/page) using only 100 vision tokens,
+and outperforms MinerU2.0 (6000+ tokens per page on average) while utilizing fewer than
+800 vision tokens. In production, DeepSeek-OCR can generate training data for LLMs/VLMs
+at a scale of 200k+ pages per day (a single A100-40G). Codes and model weights are publicly
+accessible at http: //github.com/deepseek-ai/DeepSeek-OCR.
+
+Se 64\is toks(let) He 100vis toks(eft) - © - 64 vistoks(right) _- © - 100 vis toks(right) J
+
+DeepSeek OCR (Gundam)
+« e
+
+100% 95, 0 = soar sar 197 Cas
+
+- F 4 “| F |
+aed am | 10)
+
+5x
+20%
+10%
+o% ox
+
+Compression (x)
+
+5
+
+Vison Tokens > 1500
+‘Average per image (« More)
+
+g
+Deloe
+Saas
+ae
+as
+Sar
+a |
+|
+ee |
+|
+Overall Performance (Edit
+
+rach
+Text Tokens in Per O vage( (Ground. a Average Vision Tokens per Image
+(a) Compression on Fox benchmark (b) Performance on Omnidocbench
+
+Figure 1 | Figure (a) shows the compression ratio (number of text tokens in ground truth/number
+of vision tokens model used) testing on Fox [21] benchmark; Figure (b) shows performance
+comparisons on OmniDocBench [27]. DeepSeek-OCR can achieve state-of-the-art performance
+among end-to-end models enjoying the fewest vision tokens.
+Contents
+
+1 Introduction 3
+2 Related Works 4
+2.1 Typical Vision Encodersin VLMs .... 1... 2. es 4
+
+2.2 End-to-end OCR Models... 2... 0... ee 4
+
+3 Methodology 5
+3.1 Architecture... 2. ee ee 5
+
+3.2 DeepEncoder .. 1.1... es 5
+3.2.1 Architecture of DeepEncoder .. 1... 6... ee 5
+
+3.2.2 Multiple resolution support... 6... 2. ee 6
+
+3.3 The MoE Decoder. ...... 2.0... 000 0c ee 7
+
+3.4 DataEngine .. 2.2... ee 7
+3.4.1 OCR10data ...... 2... 0.0.0... eee ee ee 7
+
+3.4.2 OCR20data ........ 0.0.0.0... eee ee ee 8
+
+3.4.3 Generalvisiondata...... 2.0... 0.000.000. ee eee eee 9
+
+3.4.4 Text-only data... 6.2... ee 9
+
+3.5 Training Pipelines... 2... es 9
+3.5.1 Training DeepEncoder .... 2... 2. ee 0
+
+3.5.2 Training DeepSeek-OCR .. 6... 6 ee 0
+
+4 Evaluation 10
+4.1 Vision-text Compression Study ... 2... 6. ee 0
+4.2 OCR Practical Performance .... 0... 20... 000 eee ee ee 2
+4.3 Qualitative Study ©... ee 2
+43.1 Deepparsing .. 2... 6. ee 2
+
+4.3.2 Multilingual recognition... 2.2... 2. ee 6
+
+4.3.3 General vision understanding. .... 2... ....-0.0 0200s 7
+
+5 Discussion 18
+6 Conclusion 19

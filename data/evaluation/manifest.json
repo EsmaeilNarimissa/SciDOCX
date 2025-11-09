@@ -1,0 +1,37 @@
+[
+  {
+    "file": "Biology (2023).pdf",
+    "domain": "Biology",
+    "arxiv": "2308.05326",
+    "title": "OpenProteinSet: Training data for structural biology at scale",
+    "expected_features": { "figures": 6, "tables": 2, "equations": 5 }
+  },
+  {
+    "file": "Chemistry (2024).pdf",
+    "domain": "Chemistry",
+    "arxiv": "2404.01462",
+    "title": "OpenChemIE: An Information Extraction Toolkit for Chemistry Literature",
+    "expected_features": { "figures": 5, "tables": 3, "equations": 4 }
+  },
+  {
+    "file": "Physics (2025).pdf",
+    "domain": "Physics",
+    "arxiv": "2502.10240",
+    "title": "Strong field physics in open quantum systems",
+    "expected_features": { "figures": 7, "tables": 1, "equations": 10 }
+  },
+  {
+    "file": "Polymer Physics (2021).pdf",
+    "domain": "Polymer Physics",
+    "arxiv": "2101.08985",
+    "title": "Dynamics and Rheology of Polymer Melts via Hierarchical Atomistic, Coarse-grained, and Slip-spring Simulations",
+    "expected_features": { "figures": 8, "tables": 2, "equations": 12 }
+  },
+  {
+    "file": "Computer Science (2025 DeepSeek-OCR).pdf",
+    "domain": "Computer Science",
+    "arxiv": "2510.18234",
+    "title": "DeepSeek-OCR: Contexts Optical Compression",
+    "expected_features": { "figures": 6, "tables": 2, "equations": 3 }
+  }
+]
