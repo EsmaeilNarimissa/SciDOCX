@@ -1,4 +1,6 @@
-# Python
+# ============================================================
+# Python build and cache files
+# ============================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -10,25 +12,33 @@ htmlcov/
 .cache/
 .mypy_cache/
 
-# Virtual Environment
+# ============================================================
+# Virtual environments
+# ============================================================
 .venv/
 venv/
 ENV/
 env/
 .venv-broken/
 
+# ============================================================
 # Build artifacts
+# ============================================================
 *.egg-info/
 dist/
 build/
 
-# IDE
+# ============================================================
+# IDE and editor settings
+# ============================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# System
+# ============================================================
+# System files
+# ============================================================
 .DS_Store
 Thumbs.db
 *.log
@@ -36,14 +46,18 @@ Thumbs.db
 *.url
 desktop.ini
 
-# Environment and configuration
+# ============================================================
+# Environment and configuration files
+# ============================================================
 .env
 .env.local
 .env.production
 config.local.py
 settings.local.py
 
-# Temporary files
+# ============================================================
+# Temporary and utility scripts
+# ============================================================
 temp/
 *.tmp
 *-packages.txt
@@ -52,28 +66,49 @@ verify_*.py
 cleanup_*.txt
 find_*.ps1
 
+# ============================================================
 # Local overrides
+# ============================================================
 docker-compose.override.yml
 
-# User data and generated outputs
+# ============================================================
+# Data and generated outputs (ignored except for .gitkeep)
+# ============================================================
 data/input/*
 !data/input/.gitkeep
+
 data/output/*
 !data/output/.gitkeep
+
 data/images/*
 !data/images/.gitkeep
+
 data/mmrag-output/*
 !data/mmrag-output/.gitkeep
 
-# Model weights (multi-GB, users download via huggingface-cli)
+# ============================================================
+# Model weights and large binaries
+# ============================================================
 models/deepseek-ai/*
 !models/deepseek-ai/.gitkeep
+
 models/Qwen/*
 !models/Qwen/.gitkeep
 
-# Upstream code (users clone separately or add as submodule)
+# ============================================================
+# Upstream code (submodules or external projects)
+# ============================================================
 DeepSeek-OCR/
 
-# Keep essential directories structure but ignore temp contents
+# ============================================================
+# Keep directory structure but ignore runtime/temp contents
+# ============================================================
 outputs/*
 !outputs/.gitkeep
+
+# ============================================================
+# Evaluation branch: local notes to ignore permanently
+# ============================================================
+test/TODO.md
+test/Cell 3_5 vs AI Evaluation.md
+test/human-AI Scoring protocol.md
