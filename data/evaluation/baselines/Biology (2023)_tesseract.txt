@@ -1,0 +1,112 @@
+arXiv:2308.05326v1 [q-bio.BM] 10 Aug 2023
+
+OpenProteinSet: Training data for structural biology
+
+at scale
+Gustaf Ahdritz Nazim Bouatta
+Harvard University Laboratory of Systems Pharmacology, Harvard Medical School
+gahdritz@g.harvard.edu nazim_bouatta@hms. harvard. edu
+Sachin Kadyan Lukas Jarosch
+Columbia University Columbia University
+
+Daniel Berenberg
+Prescient Design, Genentech & Department of Computer Science, New York University
+
+Tan Fisk Andrew M. Watkins Stephen Ra
+Flatiron Institute Prescient Design, Genentech Prescient Design, Genentech
+
+Richard Bonneau Mohammed AIQuraishi
+Prescient Design, Genentech Department of Systems Biology, Columbia University
+m.alquraishi@columbia.edu
+
+Abstract
+
+Multiple sequence alignments (MSAs) of proteins encode rich biological infor-
+mation and have been workhorses in bioinformatic methods for tasks like protein
+design and protein structure prediction for decades. Recent breakthroughs like Al-
+phaFold2 that use transformers to attend directly over large quantities of raw MSAs
+have reaffirmed their importance. Generation of MSAs is highly computationally
+intensive, however, and no datasets comparable to those used to train AlphaFold2
+have been made available to the research community, hindering progress in machine
+learning for proteins. To remedy this problem, we introduce OpenProteinSet, an
+open-source corpus of more than 16 million MSAs, associated structural homologs
+from the Protein Data Bank, and AlphaFold2 protein structure predictions. We have
+previously demonstrated the utility of OpenProteinSet by successfully retraining
+AlphaFold?2 on it. We expect OpenProteinSet to be broadly useful as training and
+validation data for 1) diverse tasks focused on protein structure, function, and
+design and 2) large-scale multimodal machine learning research.
+
+1 Introduction
+
+Multiple sequence alignments (MSAs) comprise sets of related protein sequences with their amino
+acid residues in correspondence (“aligned”). MSAs encode rich information about the functional and
+structural features of a protein family by summarizing the (co-)evolutionary trajectory of its sequence.
+
+MSAs are used in a wide variety of bioinformatic applications, including Prion (10 function prediction
+
+PI 3 4], protein language models 5} [6] 7,8} [9], disease variant prediction (10) {IT}, phylogeny
+[13], protein design [14 [16], protein classification [17], and, most notably, protein structure
+
+tShaton (8 (18) 24] [25] (26][27\[28) [29|/30| [31] [19] (20) [2 1) (22) /23} a Early work on the latter, culminating
+
+Preprint. Under review.
+MRSLLLMGVLLISACSSGHKPPPEPDWSNTVPVNKTIPVDTQGGRNES
+MRAIVLLGVLLLGACSSSFKPPPEPDWSHTVPVNKTLPVDTQG-- ---
+--FIAVALVAILAGCAHGPKLPPEPDMSHLVIVNKSIPAELAG- ----
+--LVGILLVAALAGCASKPKPAPEPDMTNLVPVNKTLPSALVG- ----
+--TAAALTVASLSGCGG-FTPPPNPDMSHLVPANKTIPEELQGRV---
+
+Figure 1: MSA primer. Five rows of the OpenProteinSet MSA for PDB protein 3ZBI, chain C
+(i). Each row of an MSA is a protein sequence. Proteins are one-dimensional strings composed
+with a vocabulary of 20 amino acids—or “residues”—each represented by a letter. The target or
+“query” protein is given in the first row of the MSA. Subsequent rows are evolutionarily related
+(“homologous”) proteins retrieved from a large sequence database on the basis of similarity to the
+query sequence. To improve alignments and accommodate homologous sequences whose length
+has changed over time, MSA alignment software can insert “gaps” (represented here by dashes) in
+or delete residues from homologous sequences. The number of homologous sequences in an MSA
+(“depth”) and their diversity both contribute to the MSA’s usefulness.
+
+in the original AlphaFold, achieved notable success by training models on summary statistics derived
+from MSAs [18} [24] [25] [26] [27] {28} [29] [30) [31] 19] {20}. More recently, large transformer-like neural
+networks [32] that predict protein structure by directly attending over raw MSAs came to prominence
+
+. Among them, AlphaFold2 reached near-experimental accuracy for most proteins at the 14th
+biannual Critical Assessment of Structure Prediction (CASP) by attending over raw MSAs alongside
+structural templates of homologous proteins (22). Follow-up work, including RoseTTAFold and the
+state-of-the-art protein complex structure prediction model AlphaFold-Multimer , build on
+the same techniques. The dependence of these methods on sufficiently deep, diverse MSAs and close
+structural homologs is evidenced by the fact that they perform worst on proteins that lack them (22).
+
+Despite the central importance of MSAs, the quantity of precomputed MSAs accessible to the
+research community has not kept pace with the demands of modern machine learning methods. Large
+models like AlphaFold2 or MSA Transformer (6). for example, were trained on internal datasets of
+millions of MSAs, and the computation of various official databases of AlphaFold2 predictions [34|
+35} would have required hundreds of millions more. None of this data has yet been released to
+the public, however, and existing public MSA databases are comparatively small and
+outdated. Raw sequence and structure data are available in large quantities under open licenses [22]
+(40) (41) (42) and there also exist several mature, open-source software suites for computing MSAs at
+varying levels of sensitivity . Together, these resources are sufficient to generate MSAs at
+scale; indeed, they were used to create the aforementioned unreleased datasets. Nevertheless, doing
+so is computationally expensive. Depending on target sequence length and the size of the sequence
+database being searched, generating a single MSA with high sensitivity can take several hours.
+This effectively renders research at the forefront of protein machine learning and bioinformatics
+inaccessible to all but a few large research groups.
+
+Here, we present OpenProteinSet, a large corpus of precomputed MSAs suitable for training bioin-
+formatic models at the scale of AlphaFold2 and beyond. OpenProteinSet contains an updated
+reproduction of AlphaFold2’s unreleased training set, including MSAs and structural template hits
+for all unique Protein Data Bank (PDB) chains. It also incorporates more than sixteen million MSAs,
+computed for each cluster in Uniclust30 . From these, we identify a maximally diverse and
+deep subset of MSAs that are well-suited for AlphaFold2-style training runs and provide associated
+AlphaFold2 structure predictions.
+
+We have demonstrated the utility of OpenProteinSet by using it to train OpenFold, a trainable, open-
+source reproduction of AlphaFold2 (47), achieving accuracy at parity with that of DeepMind’s original
+model. Model parameters resulting from these experiments have been made publicly available.
+
+Not counting these validation experiments or postprocessing, OpenProteinSet represents millions of
+compute-hours.
+
+After a brief review of related work in Section [2] we provide an overview of the composition of
+OpenProteinSet in Section] Section[4]describes our retraining experiments. We conclude with a
+discussion in Section|[6]

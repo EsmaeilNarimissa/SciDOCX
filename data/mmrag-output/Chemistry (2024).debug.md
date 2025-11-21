@@ -1,0 +1,1903 @@
+# MM-RAG Debug Output
+
+Total elements: 169
+
+---
+
+## Element: page_1_para_1
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+# OpenChemIE: An Information Extraction Toolkit For Chemistry Literature
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Vincent Fan,\\*,†,§ Yujie Qian,\\*,†,§ Alex Wang,†,§ Amber Wang,† Connor W. Coley,†,¶ and Regina Barzilay\*,†,¶
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+†Computer Science and Artificial Intelligence Laboratory, Massachusetts Institute of Technology, Cambridge, MA, 02139  ‡Department of Chemical Engineering, Massachusetts Institute of Technology, Cambridge, MA, 02139  ¶Department of Electrical Engineering and Computer Science, Massachusetts Institute of Technology, Cambridge, MA, 02139  §Equal Contribution
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+E- mail: vincentf@mit.edu; yujieq@csail.mit.edu; regina@csail.mit.edu
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Information extraction from chemistry literature is vital for constructing up- to- date reaction databases for data- driven chemistry. Complete extraction requires combining information across text, tables, and figures, whereas prior work has mainly investigated extracting reactions from single modalities. In this paper, we present OpenChemIE to address this complex challenge and enable the extraction of reaction data at the document level. OpenChemIE approaches the problem in two steps: extracting relevant information from individual modalities and then integrating the results to obtain a final list of reactions. For the first step, we employ specialized neural models that each address a specific task for chemistry information extraction, such as parsing molecules
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+or reactions from text or figures. We then integrate the information from these modules using chemistry- informed algorithms, allowing for the extraction of fine- grained reaction data from reaction condition and substrate scope investigations. Our machine learning models attain state- of- the- art performance when evaluated individually, and we meticulously annotate a challenging dataset of reaction schemes with R- groups to evaluate our pipeline as a whole, achieving an F1 score of \(69.5\%\) . Additionally, the reaction extraction results of OpenChemIE attain an accuracy score of \(64.3\%\) when directly compared against the Reaxys chemical database. We provide OpenChemIE freely to the public as an open- source package, as well as through a web interface.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Reaction data curated from scientific literature is commonly used to train models for cheminformatics. Today, this data is collected and maintained by experts in databases such as Reaxys. \(^{1}\) However, this manual extraction comes with prohibitive cost and delayed updates. Moreover, increasingly nuanced machine learning models for reaction development require more fine- grained and comprehensive data, pertaining to reaction conditions, substrate scope, and other screening processes in synthetic chemistry. \(^{2 - 5}\) Existing automated techniques can only partially address this task, focusing on specific subproblems, such as reaction parsing from individual diagrams or text passages. \(^{6 - 9}\) In this paper, we present OpenChemIE, a system that extracts reaction data from chemical literature at the document level.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+This extraction task is difficult because large swathes of reaction data are realized in multiple modalities, often requiring chemical reasoning to fully determine relevant molecular structures. Figure 1 illustrates two challenges. First, the molecular structures are not entirely depicted in the figure, as they contain R- groups. The abbreviated structures can be identified by directly parsing phenol for \(\mathrm{R}^{2}\) in entry 1 of the accompanying table, or by comparing the differences in the molecular graphs of 1 and 1u in entry 21. Second, the system must align additional reaction metadata with the correct structures. In Figure 1 the highlighted
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Figure on page 1
+
+VLM description: The figure appears to be a scatter plot with two axes. The x-axis is labeled "Time" and the y-axis is labeled "Temperature". The data points are scattered across the plot, with no clear trend or pattern visible. The variable relationships are not immediately apparent from the plot alone.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+"Condition A: The reaction was carried out by using 1 (0.2 mmol), PdI2 (10 mol %), P(2- furyl)3 (40 mol %), Et3N (2 equiv), and TBHP (2 equiv) in DMF (2 mL) at \(85^{\circ}\mathrm{C}\) under an argon atmosphere.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+"Condition B: The reaction was carried out by using 1 (0.2 mmol), Pd(dba)2 (10 mol %), P(2- furyl)3 (10 mol %), and KOAc (2 equiv) in DMF (2 mL) at \(85^{\circ}\mathrm{C}\) under an argon atmosphere.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+molecule is only referred to by the label 1 in the footnote text, which contains detailed reaction conditions. In other cases, conditions may also be defined in a figure or table, or the reaction itself may be described in text.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+To address these challenges, OpenChemIE provides a streamlined computational pipeline, which analyzes individual modalities and combines the extracted information together to recover implicitly defined reactions. Building on our prior research in reaction extraction, \(^{7}\) molecular optical recognition, \(^{11}\) and reaction diagram parsing, \(^{6}\) we design additional modules that enable OpenChemIE to fuse information at three different levels. First, we train a machine learning model to associate molecules depicted in diagrams with their text labels, performing a multimodal coreference resolution. Second, OpenChemIE aligns reactions with reaction conditions and other data presented in tables, annotated in figures, or discussed in texts by utilizing the coreference information. Lastly, OpenChemIE recognizes R- groups in a diagram by comparing molecules with the same label, and substitutes them with additional substructures listed in substrate scope tables and figures, yielding complete substrate data.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+We evaluate the performance of each individual machine learning module as well as the system as a whole. To evaluate the overall performance of OpenChemIE, we manually curated a dataset of 1007 reactions described in 78 substrate scope figures involving R- groups across five different organic chemistry journals. The extraction task requires all reaction components to be correctly predicted and R- groups to be resolved. OpenChemIE achieves an F1 score of 69.5% on this dataset, and we performed a meticulous evaluation to analyze the error contributions of the different modules of the pipeline, identifying areas where the system could be further enhanced in future work. Furthermore, in an end- to- end evaluation of OpenChemIE on extracting reaction data from journal articles, we attain an accuracy of 64.3% when comparing against existing extractions in Reaxys. Notably, our models for reaction diagram parsing, molecule detection, and coreference resolution all perform robustly under evaluation on independent benchmarks, and our R- group resolution algorithm only contributes to a small amount of mistakes. The majority of errors were due to mistakes in molecule recognition or optical character recognition.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+OpenChemIE is available on a public web portal (https://mit.openchemie.info) as an easily accessible demonstration of key forms of analysis that we incorporate. The full
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+pipeline and its individual methods for analysis are provided in a Python package (https://github.com/CrystalEye42/OpenChemIE) that is suitable for larger- scale information extraction. Our Python package allows for comprehensive extractions of molecules and reactions from PDF files, as well as from only text and images. The toolkit is fully open- source to facilitate future development in this area.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Extracting From Figures This task includes molecule recognition and reaction extraction. Molecule recognition involves translating molecular images into SMILES strings. Initial approaches employed rule- based methods for determining the structures of molecules, utilizing a suite of algorithms and heuristics to detect individual components such as bonds and atoms. \(^{12,13}\) Later works instead leveraged CNN- based encoder- decoder architectures from deep learning to perform this segmentation, allowing for robust recognition across diverse styles. \(^{11,14 - 18}\) Recent research has also enabled the extraction of reaction schemes from figures, in which the reactants, products, conditions, and yield for each reaction are identified. These works approached the segmentation either by using a series of heuristics and image filters \(^{19}\) or by applying data- driven models for object detection and sequence generation. \(^{6,20}\)
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Several works have additionally developed systems for automatic extraction from figures of real- world documents. These include ReactionDataExtractor \(^{19}\) and its 2.0 version, \(^{20}\) which involve parsing reaction schemes, and also include MolMiner \(^{21}\) and DECIMER.ai, \(^{22}\) which focus on molecule recognition. ChemSchematicResolver \(^{8}\) is another molecule recognition system that additionally resolves R- groups defined in text labels. However, achieving a robust figure- based extraction system remains challenging due to the wide variation of styles and possible complexities for molecules and reaction schemes.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Extracting From Text This task consists of identifying chemical entities and their roles, as well as parsing described reactions. Several studies for the former have centered on dataset
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+OpenChemIE addresses the problem of extracting a list of reactions, containing chemical structures for reactants and products, as well as reaction conditions from a PDF document segmented into figures, text, and tables.
+
+VLM description: The figure is a scientific plot with a title that reads "OpenChemIE: An Information Extraction Toolkit for Chemistry Literature." The authors are Vincent Fan, Yujie Qian, Alex Wang, Amber Wang, and Connor W. Coley, and Regina Barzilay. The plot is labeled as "Computer Science and Artificial Intelligence Laboratory, Massachusetts Institute of Technology, Cambridge, MA, 02139" and "Department of Chemical Engineering, Massachusetts Institute of Technology, Cambridge, MA, 02139." The plot appears to be a graph with a title that is not fully visible in the image. The axes labels and units are not visible in the image. The data trends, patterns, or key observations are not discernible from the image.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+curation. \(^{23,24}\) For both chemical entity identification and reaction extraction, proposed solutions include parsers that employ a series of regular expressions and classifiers to detect key terms. \(^{25,26}\) A deep- learning solution for extracting reactions instead formulates the problem as a sequence labeling task and utilizes a fine- tuned transformer encoder architecture.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+A few works have created systems that extract from PDF files of documents instead of from plain text, presenting additional engineering challenges. These include ChemDataExtractor \(^{9}\) and PDFDataExtractor, \(^{27}\) which identify chemical entities and their associated properties. While these can extract important information available in text, they do not process relevant information from figures that would augment the data. Text- based descriptions of reactions and molecules are often underspecified, generally referring to these entities using families of compounds or by labels defined in figures. Resolving these mentions to obtain specific molecular structures is vital. In contrast to both these and the figure- based extraction systems, OpenChemIE aims for a more versatile, unified system. The advantage of OpenChemIE is our usage of specialized chemistry- informed algorithms to integrate extractions from multiple modalities, namely text, tables, and figures, thus overcoming the single modality barrier and enabling more comprehensive extractions.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## Problem Formulation
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+As seen in Figure 2, OpenChemIE addresses the task of extracting detailed chemical reactions at the document level. We consider the input journal article to be a triple of (Figures, Texts, Tables), which can be automatically segmented with existing PDF parsing tools. We seek to extract the reactions described in the paper by identifying machine- readable structures for their reactants and products, as well as other metadata. The expected output is a list of reactions \(\{\mathbf{R}_{1},\mathbf{R}_{2},\ldots ,\mathbf{R}_{\mathbf{n}}\}\) , where each reaction \(\mathbf{R_{i}}\) is a triple \((R_{i},P_{i},C_{i})\) . \(R_{i}\) is the set of reactants and \(P_{i}\) is the set of products, each consisting of one or more molecules expressed as SMILES strings. \(C_{i}\) is the set of metadata associated with the reaction, including detailed conditions and yield information, and may be empty if no such information is parsed from the paper. We do not capture information contained in other plots, such as reaction coordinate diagrams or spectral data.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+The information extraction task is thus expressed as a function \[f:\mathrm{(Figures,~Texts,~Tables)}\rightarrow \{\mathbf{R}_{1},\mathbf{R}_{2},\ldots ,\mathbf{R}_{n}\} \quad (1)\]
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Crucially, OpenChemIE establishes relationships between its three inputs to inform its output, such that \(f\) (Figures, Text, Tables) contains more data than \(f\) (Figures) \(\cup f\) (Texts) \(\cup\) \(f\) (Tables), the result of individually extracting from each modality.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## OpenChemIE Overview
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In the following section, we present an overview of OpenChemIE, a dedicated toolkit designed to extract full reaction data from chemistry papers. A summary of our system can be found in Figure 3. Initially, OpenChemIE receives the document which has been segmented into figures, text, and tables for use in the downstream steps of our pipeline (implementation details are provided in the Supporting Information). For each modality, we have developed
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Overview of OpenChemIE, which receives segmented figures, texts, and tables for processing. The results from individual neural models for each modality are combined through reaction condition alignment and R-group resolution in OpenChemIE to yield
+
+VLM description: The figure is a scientific plot with a title that reads "Overview of OpenChemIE, which receives segmented figures, texts, and tables for processing." The plot appears to be a graph with a y-axis labeled "Value" and an x-axis labeled "Variable." The y-axis is marked with numerical values, while the x-axis is labeled with categorical data points. The graph shows a trend where the value increases as the variable increases, with some outliers and a few points that do not follow the general trend. The plot seems to be a scatter plot or a line graph, and the data points are likely representing experimental data or measurements.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+specialized machine learning models capable of effectively parsing molecules and reactions, as well as inferring relationships between text and diagrams. To further expand the scope of information captured by OpenChemIE, we implement two general procedures that fuse the outputs of individual models to produce a more complete reaction list. A description of the individual components of OpenChemIE follows.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- Figure Analysis. Analysis of chemistry figures requires strong visual understanding, ranging from high-level comprehension of reaction schemes and relations between entities to low-level recognition of molecules. To address this multifaceted challenge, we provide four models for figure/scheme analysis. The first of these models is designed for detecting sub-images of molecules within figures (molecule detection, MolDetect) and providing the relevant bounding box. Another model is for resolving the coreference between detected molecules in the figure and labels in the text (text-figure coreference, MolCoref). Additionally, OpenChemIE utilizes our previous research for
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+parsing reaction schemes and relevant condition information (reaction diagram parsing, RxnScribe) \(^6\) and translating molecular images into their chemical structures (molecule recognition, MolScribe). \(^{11}\)
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- Text Analysis. Extracting from chemistry texts involves identifying mentions of molecules and chemical reactions. To this end, we provide two models to address both of these subtasks. The first one is a model for extracting chemical entities from texts (named entity recognition, ChemNER). The second model, from our previous research, identifies chemical reactions and their reaction conditions (reaction extraction, ChemRxnExtractor). \(^7\)
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- Multimodal Integration. We implement two additional procedures that integrate information across our single modality models. R-group resolution is the process of identifying and substituting R-group structures into reaction templates, which allows for a more complete extraction of reactions. This process utilizes parsed data from tables as well as molecule information from figure analysis models. Reaction condition alignment enhances text-based reaction descriptions with molecular structures identified in relevant diagrams. These multimodal integration components enable OpenChemIE to serve as an end-to-end pipeline for reaction extraction.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In the subsequent sections, we will elaborate on the technical details of each module comprising OpenChemIE.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Figures in chemistry literature contain essential molecular structures and reactions, as well as relational information to text in or surrounding the diagram. In particular, the new methods we develop focus on this latter aspect, which enable the success of our downstream multimodal integration modules. As in Figure 4, OpenChemIE addresses four facets of figure analysis, which we detail in this section.
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+OpenChemIE provides four models for analyzing figures in chemistry literature, including molecule detection, text-figure coreference, reaction diagram parsing, and molecule recognition.
+
+VLM description: The figure is a scientific plot from a research paper. It is titled "OpenChemIE: An Information Extraction Toolkit for Chemistry Literature." The authors are Vincent Fan, Yujie Qian, Alex Wang, Amber Wang, and Connor W. Coley. The paper is from the Computer Science and Artificial Intelligence Laboratory at the Massachusetts Institute of Technology, Cambridge, MA, 02139. The figure is labeled as "Department of Chemical Engineering, Massachusetts Institute of Technology, Cambridge, MA, 02139." The plot appears to be a graph with axes labeled as "X" and "Y," but the specific units are not visible in the image. The graph shows a trend or pattern, but without additional context or labels, it is difficult to determine the exact nature of the data or the specific observations being made.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Molecule Detection In chemistry literature, a single figure often contains multiple molecules. The task of molecule detection is to segment the figure into sub- images of molecules such that we can later recognize the structure of each individual molecule. Molecule detection shares similarities with the extensively studied object detection task in computer vision, \(^{28,29}\) which focuses on identifying sub- images of objects within natural photographs.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In OpenChemIE, we provide MolDetect, a molecule detection model formulated with sequence generation. Inspired by the Pix2Seq \(^{29}\) model designed for object detection, MolDetect identifies molecular sub- images by predicting their bounding boxes as a sequence. Given a figure, a molecule entity whose bounding box has top- left coordinates \((\mathbf{x}_{1}, \mathbf{y}_{1})\) and bottom- right coordinates \((\mathbf{x}_{2}, \mathbf{y}_{2})\) is represented as five discrete tokens, \[\mathrm{Molecule} := \mathrm{x}_{1} \mathrm{y}_{1} \mathrm{x}_{2} \mathrm{y}_{2} \mathrm{[Mol]} \quad (2)\]
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+where [Mol] is a special token indicating the detection of a molecule. MolDetect sequentially
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+generates all the molecule entities within the figure, \[\mathrm{MoDetectOutput} := (\mathrm{Molecule})^{*} \quad (3)\]
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+where \((\cdot)^{*}\) means zero or more occurrences.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+MolDetect is implemented as an encoder- decoder architecture. The figure is encoded using a convolutional neural network to obtain hidden representations. Then, the decoder is a Transformer which generates the output sequence as defined in Equations (2) and (3).
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Text- Figure Coreference It is common practice in chemistry literature to assign unique identifiers to the molecules depicted in a figure and subsequently refer to them by their respective identifiers in the accompanying text. To establish a clear link between the information in the text and the figure, we have developed MolCoref, a model that pairs molecules with their respective identifiers in the figure. An example prediction from MolCoref can be found in Figure 5, which depicts the molecules and identifiers being successfully detected and the corresponding links established.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+MolCoref also employs a sequence generation approach to resolve the coreference between identifiers and molecular structures. Specifically, its output format is defined as
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+\[\begin{array}{r l} & {\mathrm{MoCorefOutput}:= \mathrm{(Molecule~[Identifier]?)^{*}}}\\ & {\mathrm{Molecule}:= \mathrm{x_{1}~y_{1}~x_{2}~y_{2}~[Mol]}}\\ & {\mathrm{Identifier}:= \mathrm{x_{1}~y_{1}~x_{2}~y_{2}~[I d t]}} \end{array} \quad (4)\]
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+where [.]? means optional. Both the Molecule and Identifier are represented using five tokens, consisting of four coordinates and a final token to differentiate them. When a Molecule is paired with an Identifier in the figure, the model generates the Molecule first, followed by the corresponding Identifier. Otherwise, the model generates only the Molecule without the Identifier. Based on MolCoref's output, we use a molecular recognition model to parse the
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Figure on page 1
+
+VLM description: The figure appears to be a scatter plot with two axes. The x-axis is labeled "Time" and the y-axis is labeled "Temperature". The data points are scattered across the plot, with no clear trend or pattern visible. The variable relationships are not immediately apparent from the plot alone.
+
+---
+
+## Element: page_1_table_1
+
+**Type:** table  
+**Page:** 1  
+
+**Content:**
+
+Table 1 on page 1
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Step 2: MolScribe & OCR
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+chemical structures and an optical character recognition (OCR) model to parse the text strings.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Compared to the previous approach \(^{8}\) that relies on heuristic rules for aligning molecules with their identifiers, MolCoref integrates the detection of molecule bounding boxes and the resolution of text- figure coreference into a single model. This simplifies the process and mitigates the risk of error propagation. Furthermore, as our experiments will demonstrate, our data- driven model yields more accurate and reliable predictions.
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Illustration of extracting reactions from a figure. First, Rxnscribe parses the two reactions in the figure. Then, the molecules and text are recognized by MolScribe and OCR models respectively.
+
+VLM description: The figure illustrates the process of extracting reactions from a scientific figure. It shows the parsing of two reactions in the figure by Rxnscribe. The molecules and text are then recognized by MolScribe and OCR models, respectively.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Reaction Diagram Parsing Reaction schemes are often defined graphically within figures and in a wide range of styles, requiring a sophisticated level of visual understanding to correctly extract. To this end, OpenChemIE incorporates Rxnscribe, a model previously designed for the extraction of reaction schemes from figures. Figure 6 demonstrates the extraction process on a figure with two reactions. In it, Rxnscribe predicts the structure of both reactions correctly, with reactants, conditions, and products highlighted in red, green, and blue boxes, respectively.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Molecule Recognition Molecule recognition is the task of translating an image of a molecule into its corresponding chemical structure, typically represented as a SMILES string in a computer- readable format. OpenChemIE includes MolScribe, a model we developed earlier for molecule recognition. Our previous modules for text- figure coreference and reaction diagram parsing only extract the high- level structure of diagrams. To fully extract the reaction or molecular information, we further crop the bounding boxes and pass the individual subdiagrams to downstream modules. As shown in Figure 5, we use MolScribe
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Illustration of extracting chemical entities and reactions from text. The passages are drawn from Liu et al..31
+
+VLM description: The figure illustrates the process of extracting chemical entities and reactions from text, as described in Liu et al. The passages are drawn from their research paper. The plot shows a graphical representation of the extraction process, likely using a bar chart or similar visualization. The axes labels and units are not visible in the image. The data trends and patterns are not discernible from the provided information.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+ChemNERA tandem addition/cyclization reaction between trifluoromethyl N- acylhydrazones and cyanamide is described, and cyanamide is described, which provides a novel and efficient process for the synthesis of polysubstituted 3- trifluoromethyl- 1,2,4- triazolines and their derivatives. The method has the advantages of mild reaction conditions, a broad substrate scope, good product yields, and atom economy.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+ChemRxnExtractorAfter brief optimization of the reaction conditions, the suitable reaction condition was used to carry out the reaction by using 1a', REACTANTS cyanamide, REACTANTS
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+to carry out the reaction by using 1a', REACTANTS cyanamide, REACTANTS
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Cs2CO3, REACTANTS and CuI REACTANTS in a molar ratio of 1:2.5:2.5:0.15 in
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+dimethylformamide SCUENT (DMF) at 150 °C TEMPERATURE under an air atmosphere
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+to give 4a PRODUCT in 78% YIELD yield (Supporting Information, Table S2).
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+and EasyOCR,30 an off- the- shelf optical character recognition tool, to translate the content in each bounding box to paired SMILES strings and text labels. Similarly, in Figure 6, we use the same tools to extract the molecular structures of products and reactants, as well as text descriptions of accompanying reaction conditions.
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+As seen in Figure 7, OpenChemIE contains two powerful natural language processing models which excel at extracting chemical entities and reactions from the text in chemistry literature. able to extract chemical entities and reactions from text. The machine learning models are named ChemNER and ChenRxnExtractor respectively.
+
+---
+
+## Element: page_1_para_9
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Named Entity Recognition Our first model is dedicated to the task of extracting chemical entities from a given text excerpt. In scientific literature, chemical entities can take on diverse forms, including molecular formulas (e.g., NaOH), IUPAC systematic names (e.g., 1,3,4- oxadiazole), abbreviations (e.g., GABA), or database identifiers (e.g., CID16020046). For successful extraction, it is essential to locate these mentions in the text and accurately determine their specific forms.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In OpenChemIE, we provide a model named ChemNER, which is trained on the publicly available CHEMDRER corpus. \(^{23}\) This corpus comprises a collection of PubMed abstracts with expert- annotated chemical entity mentions. Our model adopts a sequence tagging approach using the BIO format. We fine- tune a language model that has been pre- trained on biomedical literature, \(^{32}\) further enhancing the model's performance and domain- specific understanding. In Figure 7, ChemNER detects all three chemical entities and correctly makes the distinction that "cyanamide" refers to a specific compound whereas the other chemical mentions refer to general families of compounds.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Reaction Extraction Reaction extraction is a structured prediction task that involves identifying the reactions presented in the text. OpenChemIE includes ChemRxnExtractor, \(^{7}\) a model previously developed for text- based reaction extraction. Figure 7 displays a processed reaction description where the product is represented by the identifier "4a", with additional information about reaction conditions and yield also highlighted. However, the chemical structures of the extracted reactant "1a" and product "4a" are omitted in the text, highlighting the importance of our models for coreference resolution and molecule recognition in diagrams.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## Multimodal Integration
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Complete reaction schemes, which require full structural information of reactants and products as well as complex descriptions of reaction conditions, are often specified across multiple paragraphs, tables, and figures. Understanding the connections between these modalities is challenging, as demonstrated in Figure 1, and has not been significantly explored by previous works. OpenChemIE begins to address the general task of multimodal integration by dividing the problem into two main challenges. For one, detailed reaction condition and yield data must be properly aligned with machine readable molecular structures of the reactions they refer to. Furthermore, many diagrams are underspecified, and the R- groups they contain
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Reaction Condition Alignment. We augment incomplete reaction descriptions in text with resolved molecule identifier pairs and parse additional reaction condition tables. Example adapted from Liu et al..31
+
+VLM description: The figure is a scientific plot titled "Reaction Condition Alignment." It shows a table with two columns: "Molecule Identifier Pair" and "Reaction Condition." The table is adapted from Liu et al.31 The plot appears to be a comparison or analysis of reaction conditions across different molecules. The data trends and patterns are not explicitly visible in the figure.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+must be inferred from a separate molecule in the diagram or a completely different table altogether. In the following sections, we describe how we integrate our individual model results together for multimodal understanding.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Reaction Condition Alignment In OpenChemIE, we provide methods to align the reaction data contained in figures with the information from text and tables, obtaining more complete reaction descriptions.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+One type of reaction condition alignment we address is the task of integrating information from condition screening tables with their corresponding reactions displayed in figures, such as in Figure 8. For this, we created a parser to extract the table headers and columns. We use a dictionary- based classifier to categorize each column based on its header, such as being for temperature, solvent, yield, or other common types of metadata. Each row in the table corresponds to a complete configuration of reaction conditions, which we add to the set of reaction conditions for the relevant reaction.
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+R-Group Resolution. R-groups are first identified from diagrams and tables and then substituted into the appropriate reactant molecule templates. Example adapted from Zhang et al. \(^{33}\)
+
+VLM description: The plot is a scientific figure titled "R-Group Resolution." It shows a diagram with a reactant molecule template and a reaction pathway. The figure is adapted from Zhang et al. The axes labels and units are not visible in the image. The plot appears to show a reaction pathway with a specific R-group resolution process.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Reactions and their details are often described within the accompanying text as well. However, the reactants and products in this modality are often distinguished by their unique identifier, with the structural information of the molecules defined separately in figures. With only the identifier, these text- based reactions would be incomplete due to the missing of molecular structures. To address this issue, we align the molecular structure information from figures with their identifiers in text. From our figure analysis module, we first obtain a mapping between the identifiers and their structures using MolCoref. Whenever an identifier is encountered during the text- based reaction extraction stage, we substitute the identifiers with their SMILES representation. This integration along with our table- figure integration allows for the unification of information across three modalities to extract significantly more complete reaction data.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+R- Group Resolution Previous work from ChemSchematicResolver \(^{8}\) has been done to parse simple definitions of R- groups that are explicitly expressed as text chemical formulae within figures (e.g., "R=Me") and perform the corresponding substitutions. In addition to this case, OpenChemIE seeks to comprehend other forms of substrate scope, namely the
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+cases where products are depicted as different molecular structures or where a table separate from the reaction scheme defines the R- groups, which require further reasoning to determine the resolved molecular structures.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+We address the two most common modes of presentation for substrate scope, which are shown in Figure 9. In the first case, the reaction template is displayed graphically and the R- groups are defined as text in an associated table or label. For this, we parse the R- group information from the text formula and use MolScribe \(^{11}\) to predict the graph structures of the template molecules. We then directly substitute the chemical formulas of the R- groups into their placeholders in the graphs. These structures are then expanded and converted to SMILES strings by MolScribe's postprocessing methods.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In the second case, in addition to a reaction template, there is a set of possible products defined in the diagram with which one must infer the structures of the R- groups and the reactants. To approach this, we first leverage MolCoref to identify the labels of all molecules in the figure and match the label prefixes to associate the specific products with their template molecule. Given the reaction template and the specific product, we use a subgraph isomorphism algorithm implemented in RDKit \(^{34}\) to identify the atom mapping between the two molecular structures. The unmapped atoms in the specific product are molecular fragments that correspond to the substructures of the R- groups. We substitute the identified R- group fragments into the reactant templates in order to obtain the full molecular structures of the entire reaction.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+With the two integration steps presented above, we obtain a reaction list with complete molecule structures and conditions. In the experiments, we evaluate the performance of the pipeline.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+One of the central challenges in developing a reaction extractor is a lack of high- quality benchmark datasets with corresponding evaluation metrics. To this end, we created our own dataset consisting of reactions and diagrams from chemistry literature, with manually produced annotations. In addition, we compared the system output against reactions in the Reaxys database. While our annotation scheme and extraction scope are not fully aligned with that of Reaxys (e.g., Reaxys does not include reactions with low or no yield), this challenging evaluation provides another measure of the system performance. We conduct a meticulous error analysis for both evaluation settings and further discuss the performance of individual modules in OpenChemIE.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Evaluation With Annotated Data We evaluate OpenChemIE on a newly annotated reaction extraction dataset. This dataset contains 1007 reactions collected from 78 figures from recent issues of five chemistry journals: Journal of Organic Chemistry, Organic Letters, Angewandte Chemie International Edition, European Journal of Organic Chemistry, and Asian Journal of Organic Chemistry. The figures in this dataset are substrate scope diagrams. Using ChemDraw, we annotated SMILES strings for every reaction by inferring the structure of reactants from the structures of the template product and table of full products. A set of example annotations for this dataset is displayed in Figure 10. For each substrate scope diagram, we first annotate the reaction template \((R,P)\) , where \(R\) and \(P\) are the sets of SMILES strings for the reactants and products respectively, which may contain R- groups. Then, we annotate the substrate scope \(\{(R_{i},P_{i})\}\) , where \(R_{i}\) is a set of reactants whose R- groups have been substituted based on \(P_{i}\) .
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+For this dataset, we evaluate the model's predictions using exact match, i.e., a predicted reaction \((\hat{R},\hat{P})\) is considered correct only if all the molecular structures of its reactants and products match those in a ground truth reaction. We compute the precision, recall, and F1 to assess the model's performance. Here, the precision measures what fraction of the model's
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Illustration of annotation process, where we parse the SMILES strings of the template reaction \((R,P)\) and provide each detailed reaction \((R_{i},P_{i})\) .
+
+VLM description: The figure illustrates the annotation process for a template reaction \((R,P)\), where each detailed reaction \((R_{i}, P_{i})\) is provided. The plot appears to be a graphical representation of the annotation process, possibly showing the transformation of the SMILES strings of the template reaction into detailed reactions. The axes labels and units are not visible in the provided caption. The focus is on the annotation process and the transformation of the SMILES strings into detailed reactions.
+
+---
+
+## Element: page_1_table_1
+
+**Type:** table  
+**Page:** 1  
+
+**Content:**
+
+Performance of OpenChemIE for extracting reactions from substrate scope diagrams, as well as the individual performance of each module in OpenChemIE.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+\* Precision/Recall/F1 by default. For molecule detection, we use Average Precision. \(^{35}\) For molecular recognition, we use accuracy.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+predictions is correct, the recall measures what fraction of the ground truth reactions is correctly predicted, and F1 score is the harmonic mean of precision and recall. As seen in Table 1, OpenChemIE achieves a precision of \(79.1\%\) , recall of \(62.0\%\) and F1 score of \(69.5\%\) on this task.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Each individual module in OpenChemIE is also evaluated on an independent benchmark to measure its performance in isolation of the entire system. Table 1 shows state- of- the- art performances of all six individual machine learning models on their respective benchmarks. In particular, MolCoref achieves an \(90.1\%\) F1 score on a dataset of 1696 diagrams metic
+
+---
+
+## Element: page_1_table_1
+
+**Type:** table  
+**Page:** 1  
+
+**Content:**
+
+Reaction extraction results on journal articles compared against Reaxys.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+ulously annotated with molecule- identifier information. As detailed in our past research, RxnScribe achieves a strong \(91.0\%\) F1 score on identifying single line reaction diagrams, and MolScribe has an accuracy of \(71.9\%\) on realistic molecular structures drawn from past ACS publications. We discuss additional evaluation details and error contribution rates to the next section.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Evaluation With Reaxys We evaluate the performance of OpenChemIE by comparing the extractions against those in Reaxys. Reaxys is a large commercial database of reactions that is periodically updated by chemical experts who manually extract the data from journal articles.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+We construct the dataset for this task by collecting 19 journal articles containing 155 figures from recent issues of The Journal of Organic Chemistry and Organic Letters that contained reaction condition and substrate scope screening tables. These journal articles were each converted into a triple of figures, texts, and tables for input to OpenChemIE with a set of off- the- shelf PDF- parsing tools corresponding to each modality. \(^{27,36,37}\) Due to errors in diagram parsing frequently yielding inaccurate borders, we manually adjusted diagram segmentations for this dataset. Existing reaction extractions in Reaxys provided the groundtruth annotations. For each article, the groundtruth thus contains a list \(\{(R_{i}, P_{i})\}\) where \(R_{i}\) and \(P_{i}\) are sets of SMILES strings for the reactants and products respectively.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+We use a soft match to evaluate the accuracy of our pipeline's predictions. First, molecular structures are considered to be equivalent if they are tautomers to each other since some compounds rearrange to specific isomers in solution. Second, a predicted reaction \((\hat{R}, \hat{P})\) is considered correct if Reaxys contains an entry \((R, P)\) such that \(\hat{R}\) is a subset of \(R\) and \(\hat{P}\) is a
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+subset of \(P\) . We choose to use this evaluation metric because of ambiguities that arise during the annotation process, for example, whether certain compounds are considered reactants or reagents specified in the set of conditions instead.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+As seen in table 2 OpenChemIE extracts 400 reactions from this dataset, of which 257 have a soft match in the Reaxys database, for an accuracy of \(64.3\%\) . Since ReactionDataExtractor \(2.0^{20}\) does not extract from texts or tables, we only provide the segmented diagrams for each journal article to ReactionDataExtractor 2.0. It achieves an accuracy of \(8.8\%\) with 102 total predictions in this evaluation setting. Besides reactions described in texts or tables, ReactionDataExtractor was also unable to resolve reactions whose depictions involved R- groups, which comprised the majority of reactions extracted by OpenChemIE. Moreover, we applied the same evaluation to the fully automatic version of OpenChemIE provided through our code package and web portal. In this setting, OpenChemIE achieved an accuracy of \(46.0\%\) on 359 total predictions. The decrease in accuracy can mainly be attributed to inaccurate diagram segmentations during the PDF parsing process, since the automatic tool LayoutParser was not trained specifically on chemistry literature. Additional implementation details can be found in the Supporting Information.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Analysis and Discussion We analyze the error contribution of individual components in OpenChemIE. Since the majority of reactions extracted in the previous evaluations are described in substrate scope diagrams, we focus our analysis towards the performance on the task of extracting from this setting. Figure 11 displays the error contribution of each module in the R- group resolution process. The full evaluation scores of each model are displayed in Table 1.
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Error contribution of each relevant module to the R-group Resolution process
+
+VLM description: The plot is a line graph with the following characteristics:
+
+1. **Title**: "Error contribution of each relevant module to the R-group Resolution process"
+2. **Axes**:
+   - **X-axis**: Labelled "Module", with a range from 1 to 5.
+   - **Y-axis**: Labelled "Error Contribution (%)".
+3. **Data Trends**:
+   - The graph shows a linear relationship between the number of modules (X-axis) and the error contribution (Y-axis).
+   - The error contribution increases as the number of modules increases.
+4. **Variable Relationships**:
+   - The error contribution appears to be positively correlated with the number of modules.
+
+The graph visually represents the relationship between the number of modules and the error contribution in the R-group Resolution process.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+rectly, which can be attributed to the strong performance of MolCoref and RxnScribe in the initial stage. We provide evaluation results of MolDetect and MolCoref in Table 3 and also compare the models against ChemSchematicResolver. MolDetect and MolCoref leverage the simple sequential learning framework to achieve strong performance in both tasks, whereas errors propagate throughout ChemSchematicResolver's rule- based pipeline. Per Figure 11, MolCoref ultimately caused \(15\%\) of incorrect predictions. This outsized error contribution was primarily due to diagrams in which one molecule had multiple labels, a presentation style not seen in the training dataset. On the other hand, RxnScribe achieves an F1 score of \(91\%\) for parsing single line reaction diagrams, which make up the majority of reaction templates in substrate scope diagrams, and contributed to \(0\%\) of overall errors. Our prior work provides a more detailed quantitative evaluation of RxnScribe on extracting reactions from diagrams of various styles.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Our R- group resolution algorithm also performs robustly and is generally able to correctly identify the R- groups from each product and perform the corresponding substitutions in the reactant template when the input is free of errors. However, there were a small number of cases where the algorithm returned an incorrect prediction. For example, some product
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Examples of predictions and common errors of OpenChemIE on substrate scope diagrams.
+
+VLM description: The plot is a scientific figure titled "Examples of predictions and common errors of OpenChemIE on substrate scope diagrams." It is a bar chart with two sets of data represented by different colors. The x-axis is labeled "Substrate Scope Diagrams" and the y-axis is labeled "Prediction Error." The data is color-coded, with one set in red and the other in blue. The red set shows predictions with errors, while the blue set shows common errors. The y-axis ranges from -10 to 10, with increments of 2. The x-axis ranges from 0 to 10, with increments of 2. The plot appears to be comparing the accuracy of predictions made by OpenChemIE on substrate scope diagrams.
+
+---
+
+## Element: page_1_table_1
+
+**Type:** table  
+**Page:** 1  
+
+**Content:**
+
+Evaluation of chemical diagram entity detection and coreference performance (scores are in \(\%\) -
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+templates are completely symmetric but contain two different R- groups. Since the R- group resolution algorithm does not take into account information about the layout or color of the original diagram, it is unable to differentiate between the two correctly extracted R- group fragments. In other diagrams where errors occurred, specific presentation choices violated assumptions made in the design of the algorithm. Some authors switched the chirality of certain atoms between the template and product, and others included products where not every R- group in the original template had a substituent. A more detailed discussion of specific errors can be found in the Supporting Information.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In contrast, over half of the errors in the OpenChemIE pipeline occurred during molecule recognition. In Figure 12, example (2) displays a MolScribe error occurring on a MolCoref prediction, where a molecule with label 3u is parsed incorrectly. Example (3) displays an instance where there is a MolScribe error in the original reaction template. From this, we observe that there are two reasons for MolScribe's outsized error contribution. First, if there is a single MolScribe error in the original reaction template, the extraction results for the entire diagram will be incorrect. This scenario contributed \(41.6\%\) of all errors. Second, MolScribe only achieves a \(71.9\%\) accuracy on molecules from ACS publications, which are often drawn in diverse styles.\(^{11}\) Furthermore, the tool we employed for optical character recognition of molecule labels, EasyOCR, was another large source of error. Many labels were parsed incorrectly. In example (2), the label "3g" was mistakenly parsed as "39", which meant that the product was not processed by the downstream algorithm, as it was not associated with the product with label "3".
+
+---
+
+## Element: page_1_table_1
+
+**Type:** table  
+**Page:** 1  
+
+**Content:**
+
+Evaluation of chemical entity named entity recognition by entity type (scores are in \(\%\)
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+We further analyze the two text- based extraction models in OpenChemIE, namely ChemNER and ChemRxnExtractor. ChemNER is trained based on the BioBERT- large \(^{32}\) checkpoint using the CHEMDRNER dataset. \(^{23}\) The dataset annotates mentions of chemical entities in seven types. Whereas past work does not make distinctions based on entity type during the evaluation, we evaluate the entity- level precision, recall and F1 scores on each type and also report the micro- averaged overall performance in Table 4. The model achieves an F1 score of \(87.57\%\) on the entire test set, with stronger performance on the two most common classes, SYSTEMATIC and TRIVIAL. Complete evaluation results for ChemRxnExtractor can be found in previous work. \(^{7}\)
+
+---
+
+## Element: page_1_para_2
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## OpenChemIE Interfaces
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+OpenChemIE is accessible through two interfaces: (1) a comprehensive Python package that integrates all our models and utility functions, and (2) a user- friendly Web portal that simplifies the toolkit's usage, making it accessible to a wider audience, even those without programming knowledge.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Python Package We provide an open- source Python package (https://github.com/CrystalEye42/OpenChemIE) that integrates all our models and utility functions, including
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+the PDF parser and the models for text, figure, and table analysis. We further implement methods that take a PDF document as input and effortlessly execute the information extraction pipeline, returning the extracted molecule and reaction data in a structured format. To ensure smooth usage, we provide detailed installation instructions and example use cases, enabling chemists with basic programming skills to efficiently process literature data using the toolkit.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Web Portal We have developed a user- friendly web portal (https://mit.openchemie.info) that streamlines the PDF upload process, automatically executes extraction models, and conveniently displays the results. Users can upload a PDF document of a chemistry paper, which will be processed on our backend server using the OpenChemIE toolkit. The extraction results will be visualized on the portal. As in Figure 13, predicted molecule structures are displayed in a web- based Ketcher editor, enabling the user to edit the model's predictions if desired. Due to computational constraints, our public portal can process a maximum of five pages from each paper. However, users can freely download and deploy the web portal on their own machines, granting access to all functionalities.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+In this paper we present OpenChemIE, a comprehensive system for information extraction from chemistry literature at the document level. OpenChemIE addresses the need for the integration of information across multiple modalities in order to provide complete extractions of molecules and reactions. We approach the general challenge of chemistry information extraction by incorporating chemistry- informed algorithms to integrate the results from individual modalities to obtain the final outputs. This approach allows for the extraction of previously unresolvable information, such as substrate scope investigations, and is a notable step toward achieving multimodal analysis of chemistry literature.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+OpenChemIE has made remarkable progress toward its objective of extracting reaction
+
+---
+
+## Element: page_1_fig_1
+
+**Type:** figure  
+**Page:** 1  
+
+**Content:**
+
+Illustration of the web interface for extracting molecular structures from PDF files. The uploaded PDF document is from Wu et al..<sup>38</sup>
+
+VLM description: The figure shows a web interface for extracting molecular structures from PDF files. The uploaded PDF document is from Wu et al. The interface includes a dropdown menu for selecting the type of molecule, a text box for entering the molecule's formula, and a button for submitting the query. The interface is designed to be user-friendly and efficient for extracting molecular structures from PDF files.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+data comprehensively from chemical literature, although some challenges remain to be addressed. For instance, there is room for enhancing the performance of machine learning models on diverse literature data: MolScribe might be further developed to more precisely capture less common representations of molecular structures, including Markush structures; the PDF parsing tool may benefit from adjustments to better cater to chemical documents. Additionally, while our system is adept at parsing multiple multimodal relationships, enhancing its ability to understand the complex interdependencies between different modalities in chemical documents represents an exciting area for future development. The emergent abilities of large language models hold promise for providing a more integrated end- to- end solution for chemical information extraction, suggesting an optimistic pathway forward.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## Data and Software Availability
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+The OpenChemIE toolkit is publicly available:
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- Source code: https://github.com/CrystalEye42/OpenChemIE
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- Web interface: https://mit.openchemie.info
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+. Individual machine learning models in OpenChemIE can be found at the following links:
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- MolScribe: https://github.com/thomas0809/MolScribe
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- RxnScribe: https://github.com/thomas0809/RxnScribe
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- MolDetect/MolCoref: https://github.com/Ozymandias314/MolDetect
+
+---
+
+## Element: page_1_para_9
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- ChemNER: https://github.com/Ozymandias314/ChemIENER
+
+---
+
+## Element: page_1_para_10
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- ChemRxnExtractor: https://github.com/jiangfeng1124/ChemRxnExtractor
+
+---
+
+## Element: page_1_para_11
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+The datasets for our molecule detection, molecule coreference resolution, and R- group resolution processes are constructed from journal articles shared between the American Chemical Society (ACS) and MIT under a private access agreement.
+
+---
+
+## Element: page_1_para_12
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- The annotated images for the molecule coreference and detection task, as well as their train/validation/test splits can be downloaded at https://huggingface.co/datasets/Ozymandias314/MolCorefData.
+
+---
+
+## Element: page_1_para_13
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+- The diagrams and annotations for the R-group resolution dataset, as well as data for the comparison against Reaxys are located at https://huggingface.co/datasets/Ozymandias314/OpenChemIEData for download.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** heading  
+**Page:** 1  
+
+**Content:**
+
+## Supporting Information Available
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+Supporting Information AvailableDetailed evaluation results for our new models (ChemNER, MolDetect, and MolCoref) and the overall OpenChemIE pipeline, a description of the data annotation process, and implementation details for our PDF Parser are available in the supporting information.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+AcknowledgementThe authors thank Guy Zylberberg for his contribution to the web interface development, and Zhengkai Tu for his chemical expertise. The authors additionally thank the members of Regina Barzilay's group and Connor Coley's group for helpful discussion and feedback. This work was supported by the DARPA Accelerated Molecular Discovery (AMD) program under contract HR00111920025 and the Machine Learning for Pharmaceutical Discovery and Synthesis Consortium (MLPDS).
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(1) Reaxys. https://www.reaxys.com, (accessed on 07/01/2023).
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(2) Tu, Z.; Stuyver, T.; Coley, C. W. Predictive chemistry: machine learning for reaction deployment, reaction development, and reaction discovery. Chem. Sci. 2023, 14, 226-244.
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(3) Maser, M. R.; Cui, A. Y.; Ryou, S.; DeLano, T. J.; Yue, Y.; Reisman, S. E. Multilabel Classification Models for the Prediction of Cross-Coupling Reaction Conditions. Journal of Chemical Information and Modeling 2021, 61, 156-166, PMID: 33417449.
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(4) Gao, H.; Struble, T. J.; Coley, C. W.; Wang, Y.; Green, W. H.; Jensen, K. F. Using Machine Learning To Predict Suitable Conditions for Organic Reactions. ACS Central Science 2018, 4, 1465-1476, PMID: 30555898.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(5) Qian, Y.; Li, Z.; Tu, Z.; Coley, C.; Barzilay, R. Predictive Chemistry Augmented with Text Retrieval. Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing. Singapore, 2023; pp 12731–12745.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(6) Qian, Y.; Guo, J.; Tu, Z.; Coley, C. W.; Barzilay, R. RxnScribe: A Sequence Generation Model for Reaction Diagram Parsing. Journal of Chemical Information and Modeling 2023, 63, 4030–4041.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(7) Guo, J.; Ibanez-Lopez, A. S.; Gao, H.; Quach, V.; Coley, C. W.; Jensen, K. F.; Barzilay, R. Automated Chemical Reaction Extraction from Scientific Literature. J. Chem. Inf. Model. 2022, 62, 2035–2045.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(8) Beard, E. J.; Cole, J. M. ChemSchematicResolver: A Toolkit to Decode 2D Chemical Diagrams with Labels and R-Groups into Annotated Chemical Named Entities. Journal of Chemical Information and Modeling 2020, 60, 2059–2072, PMID: 32212690.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(9) Swain, M. C.; Cole, J. M. ChemDataExtractor: A Toolkit for Automated Extraction of Chemical Information from the Scientific Literature. J. Chem. Inf. Model. 2016, 56, 1894–1904.
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(10) Zhao, S.-C.; Ji, K.-G.; Lu, L.; He, T.; Zhou, A.-X.; Yan, R.-L.; Ali, S.; Liu, X.-Y.; Liang, Y.-M. Palladium-Catalyzed Divergent Reactions of 1,6-Eynne Carbonates: Synthesis of Vinylidenepyridines and Vinylidenepyrrolidines. The Journal of Organic Chemistry 2012, 77, 2763–2772, PMID: 22364228.
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(11) Qian, Y.; Guo, J.; Tu, Z.; Li, Z.; Coley, C. W.; Barzilay, R. MolScribe: Robust Molecular Structure Recognition with Image-to-Graph Generation. Journal of Chemical Information and Modeling 2023, 63, 1925–1934.
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(12) Filippov, I. V.; Nicklaus, M. C. Optical structure recognition software to recover chemical information: OSRA, an open source solution. 2009.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(13) Peryea, T.; Katzel, D.; Zhao, T.; Southall, N.; Nguyen, D.-T. MOLVEC: Open source library for chemical structure recognition. Abstracts of papers of the American Chemical Society. 2019.
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(14) Staker, J.; Marshall, K.; Abel, R.; McQuaw, C. M. Molecular Structure Extraction from Documents Using Deep Learning. J. Chem. Inf. Model. 2019, 59, 1017-1029.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(15) Rajan, K.; Brinkhaus, H. O.; Zielesny, A.; Steinbeck, C. A review of optical chemical structure recognition tools. J. Cheminf. 2020, 12, 1-13.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(16) Oldenhof, M.; Arany, A.; Moreau, Y.; Simm, J. ChemGrapher: optical graph recognition of chemical compounds by deep learning. J. Chem. Inf. Model. 2020, 60, 4506-4517.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(17) Clevert, D.-A.; Le, T.; Winter, R.; Montanari, F. Img2Mol - accurate SMILES recognition from molecular graphical depictions. Chem. Sci. 2021, 12, 14174-14181.
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(18) Rajan, K.; Zielesny, A.; Steinbeck, C. DECIMER 1.0: deep learning for chemical image recognition using transformers. J. Cheminf. 2021, 13, 1-16.
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(19) Wilary, D. M.; Cole, J. M. ReactionDataExtractor: A Tool for Automated Extraction of Information from Chemical Reaction Schemes. J. Chem. Inf. Model. 2021, 61, 4962-4974.
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(20) Wilary, D. M.; Cole, J. M. ReactionDataExtractor 2.0: A Deep Learning Approach for Data Extraction from Chemical Reaction Schemes. Journal of Chemical Information and Modeling 2023, 63, 6053-6067, PMID: 37729111.
+
+---
+
+## Element: page_1_para_9
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(21) Xu, Y. et al. MolMiner: You Only Look Once for Chemical Structure Recognition. J. Chem. Inf. Model. 2022, 62, 5321-5328.
+
+---
+
+## Element: page_1_para_10
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(22) Rajan, K.; Brinkhaus, H. O.; Agea, M. I.; Zielesny, A.; Steinbeck, C. DECIMER.ai -
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+An open platform for automated optical chemical structure identification, segmentation and recognition in scientific publications. 2023,
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(23) Krallinger, M.; Leitner, F.; Rabal, O.; Vazquez, M.; Oyarzabal, J.; Valencia, A. CHEMENER: The drugs and chemical names extraction challenge. J. Cheminformatics 2015, 7, S1.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(24) Nguyen, D. Q.; Zhai, Z.; Yoshikawa, H.; Fang, B.; Druckenbrodt, C.; Thorne, C.; Hoessel, R.; Akhondi, S. A.; Cohn, T.; Baldwin, T.; Verspoor, K. ChEMU: Named Entity Recognition and Event Extraction of Chemical Reactions from Patents. Advances in Information Retrieval - 42nd European Conference on IR Research, ECIR 2020, Lisbon, Portugal, April 14-17, 2020, Proceedings, Part II. 2020; pp 572-579.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(25) Jessop, D. M.; Adams, S. E.; Willighagen, E. L.; Hawizy, L.; Murray-Rust, P. OSCAR4: a flexible architecture for chemical text-mining. J. Cheminformatics 2011, 3, 41.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(26) Hawizy, L.; Jessop, D. M.; Adams, N.; Murray-Rust, P. ChemicalTagger: A tool for semantic text-mining in chemistry. J. Cheminformatics 2011, 3, 17.
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(27) Zhu, M.; Cole, J. M. PDFDataExtractor: A Tool for Reading Scientific Text and Interpreting Metadata from the Typeset Literature in the Portable Document Format. J. Chem. Inf. Model. 2022, 62, 1633-1643.
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(28) Carion, N.; Massa, F.; Synnaeve, G.; Usunier, N.; Kirillov, A.; Zagoruyko, S. End-to-End Object Detection with Transformers. Computer Vision - ECCV 2020 - 16th European Conference, Glasgow, UK, August 23-28, 2020, Proceedings, Part I. 2020; pp 213-229.
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(29) Chen, T.; Saxena, S.; Li, L.; Fleet, D. J.; Hinton, G. E. Pix2seq: A Language Modeling Framework for Object Detection. The Tenth International Conference on Learning Representations, ICLR 2022, Virtual Event, April 25-29, 2022. 2022.
+
+---
+
+## Element: page_1_para_1
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(30) EasyOCR. https://github.com/JaidedAI/EasyOCR, (accessed on 07/01/2023).
+
+---
+
+## Element: page_1_para_2
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(31) Liu, X.; Liu, H.; Bian, C.; Wang, K.-H.; Wang, J.; Huang, D.; Su, Y.; Lv, X.; Hu, Y. Synthesis of 3-Trifluoromethyl-1,2,4-triazolines and 1,2,4-Triazoles via Tandem Addition/Cyclization of Trifluoromethyl N-Acilyhydrazones with Cyanamide. The Journal of Organic Chemistry 2022, 87, 5882-5892, PMID: 35412831.
+
+---
+
+## Element: page_1_para_3
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(32) Lee, J.; Yoon, W.; Kim, S.; Kim, D.; Kim, S.; So, C. H.; Kang, J. BioBERT: a pretrained biomedical language representation model for biomedical text mining. Bioinformatics 2019, 36, 1234-1240.
+
+---
+
+## Element: page_1_para_4
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(33) Zhang, Y.; Zhang, Z.; Xia, Y.; Wang, J.; Peng, Y.; Song, G. TfOH-Catalyzed Cascade Reaction: Metal-Free Access to 3,3-Disubstituted Phthalides from o-Alkynylbenzoic Acids. The Journal of Organic Chemistry 2023, 88, 12924-12934, PMID: 37643422.
+
+---
+
+## Element: page_1_para_5
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(34) Landrum, G. RDKit. https://www.rdkit.org/, 2010.
+
+---
+
+## Element: page_1_para_6
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(35) Lin, T.-Y.; Maire, M.; Belongie, S.; Bourdev, L.; Girshick, R.; Hays, J.; Perona, P.; Ramanan, D.; Zitnick, C. L.; Dollar, P. Microsoft COCO: Common Objects in Context. 2015.
+
+---
+
+## Element: page_1_para_7
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(36) Shen, Z.; Zhang, R.; Dell, M.; Lee, B. C. G.; Carlson, J.; Li, W. LayoutParser: A Unified Toolkit for Deep Learning Based Document Image Analysis. 16th International Conference on Document Analysis and Recognition, ICDAR 2021, Lausanne, Switzerland, September 5-10, 2021, Proceedings, Part I. 2021; pp 131-146.
+
+---
+
+## Element: page_1_para_8
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(37) pdfminer.six. https://pdfminersix.readthedocs.io/, (accessed on 07/01/2023).
+
+---
+
+## Element: page_1_para_9
+
+**Type:** text  
+**Page:** 1  
+
+**Content:**
+
+(38) Wu, S.; Song, W.; Zhu, R.; Hu, J.; Zhao, L.; Li, Z.; Yu, X.; Xia, C.; Zhao, J. Catalyst-Free \(\alpha\) -Alkylation- \(\alpha\) -Hydroxylation of Oxindole with Alcohols. The Journal of Organic Chemistry 2022, 87, 5464-5471, PMID: 35389661.
+
+---
+

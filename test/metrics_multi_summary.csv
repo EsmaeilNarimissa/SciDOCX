@@ -1,0 +1,6 @@
+pdf,domain,DOCX_Time(s),JSONL_Time(s),figures_found,tables_found,equations_found,figures_expected,tables_expected,equations_expected,figures_coverage(%),tables_coverage(%),equations_coverage(%),pdfminer,tesseract,Top3_HitRate,Seconds_per_page
+Biology (2023).pdf,Biology,801.46,228.65,3,1,2,6,2,5,50.0,50.0,40.0,0.22149153490975235,7.8998899889989,1.0,22.865000000000002
+Chemistry (2024).pdf,Chemistry,807.11,655.57,13,5,8,5,3,4,260.0,166.7,200.0,0.19313304721030042,17.117521367521366,1.0,65.557
+Physics (2025).pdf,Physics,793.79,206.57,4,0,20,7,1,10,57.1,0.0,200.0,0.38856589147286824,3.2620790629575405,1.0,20.657
+Polymer Physics (2021).pdf,Polymer Physics,772.71,1110.42,24,0,24,8,2,12,300.0,0.0,200.0,0.2965716646014044,14.249174917491748,1.0,111.042
+Computer Science (2025 DeepSeek-OCR).pdf,Computer Science,755.68,548.68,15,4,6,6,2,3,250.0,200.0,200.0,0.44652019471122223,15.087576374745417,1.0,54.867999999999995

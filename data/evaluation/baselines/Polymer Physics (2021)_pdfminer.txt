@@ -1,0 +1,2179 @@
+Dynamics and Rheology of Polymer Melts via Hierarchical
+Atomistic, Coarse-grained, and Slip-spring Simulations
+
+1
+2
+0
+2
+
+n
+a
+J
+
+2
+2
+
+]
+t
+f
+o
+s
+.
+t
+a
+m
+-
+d
+n
+o
+c
+[
+
+1
+v
+5
+8
+9
+8
+0
+.
+1
+0
+1
+2
+:
+v
+i
+X
+r
+a
+
+Alireza F. Behbahani
+
+†,@
+
+, Ludwig Schneider
+
+‡,@
+
+†
+, Anastassia Rissanou
+
+Baˇcov´a
+
+†
+
+‡
+, Pritam Kumar Jana
+
+, Wei Li
+
+, Manolis Doxastakis
+
+¶
+
+, Anthony Chazirakis
+§
+
+, Petra
+(cid:107)
+
+, Patrycja Poli´nska
+
+, Craig Burkhart
+
+,
+
+†
+
+Marcus M¨uller
+
+, and Vagelis A. Harmandaris
+
+∗,⊥,†,#
+
+¶
+∗,‡
+
+† Institute of Applied and Computational Mathematics, Foundation for Research and Technology - Hellas,
+Heraklion GR-71110, Greece
+‡ Institute for Theoretical Physics, Georg-August University G¨ottingen, Germany
+¶ Department of Chemical and Biomolecular Engineering, University of Tennessee, Knoxville, Tennessee
+37996, USA
+§ Goodyear S.A., Avenue Gordon Smith, Colmar-Berg L-7750, Luxembourg
+(cid:107) The Goodyear Tire and Rubber Company, 142 Goodyear Blvd., Akron, Ohio 44305, USA
+⊥ Department of Mathematics and Applied Mathematics, University of Crete, Heraklion GR-71110, Greece
+# Computation-based Science and Technology Research Center, The Cyprus Institute, Nicosia 2121, Cyprus
+
+@ A. F. Behbahani and L. Schneider contributed equally to this work
+∗ E-mail: mmueller@theorie.physik.uni-goettingen.de, harman@uoc.gr
+
+Abstract
+
+A hierarchical (triple scale) simulation methodology is presented for the prediction of the dynamical
+and rheological properties of high molecular weight entangled polymer melts. The methodology consists
+of atomistic, moderately coarse-grained (mCG), and highly coarse-grained slip-spring (SLSP) simulations.
+At the mCG level, a few chemically bonded atoms are lumped into one coarse-grained bead. At this
+level, the chemical identity of the underlying atomistic system, and the interchain topological constraints
+(entanglements) are preserved. The mCG interaction potentials are derived by matching local structural
+distributions of the mCG model to those of the atomistic model through iterative Boltzmann inversion.
+For matching mCG and atomistic dynamics, the mCG time is scaled by a time scaling factor, which
+compensates for the lower monomeric friction coeﬃcient of the mCG model than that of the atomistic
+one. At the SLSP level, multiple Kuhn segments of a polymer chain are represented by one coarse-grained
+bead. The very soft nonbonded interactions between beads do not prevent chain crossing and, hence,
+can not capture entanglements. The topological constraints are represented by slip-springs, restricting
+the lateral motion of polymer chains. A compensating pair potential is used in the SLSP model, to
+keep the static macromolecular properties unaltered upon the introduction of slip-springs. The static
+and kinetic parameters of the SLSP model are determined based on the lower level simulation models.
+Particularly, matching the orientational autocorrelation of the end-to-end vector, we determine the
+number of slip-springs and calibrate the timescale of the SLSP model. As the test case, the hierarchical
+methodology is applied to cis-1,4-polybutadiene (cPB) at 413 K. Dynamical single-chain and linear
+viscoelastic properties of cPB melts are calculated for a broad range of molecular weights, ranging from
+unentangled to well-entangled chains. The calculations are compared, and found in good agreement, with
+experimental data from the literature.
+
+1
+
+Introduction
+
+Nowadays, with the progress of available computational power, molecular simulations have become a powerful
+and predictive tool for the investigation of the chain dynamics and the rheology of polymer materials. However,
+molecular simulations of polymer materials of industrial relevance are not straightforward because of the
+extremely broad range of time and length scales involved in macromolecular chains of high molecular weights.
+As an example, relevant timescales of a polymer melt extend from the periods of covalent bond vibrations
+
+1
+
+ 
+ 
+ 
+ 
+ 
+ 
+(≈ 10−14 s) to times of entangled chain relaxation that might be of the order of seconds, even at temperatures
+well above the glass transition temperature, Tg. Moreover, relevant length scales of a polymer material cover
+atomic sizes (10−10 m) up to the size of a polymer chain (≈ 10−8–10−7 m) and possibly larger length scales
+that characterize the structure of hybrid multiphase systems. Therefore, a single modeling approach cannot
+simultaneously address all relevant length and time scales, and it is necessary to combine simulation methods
+of diﬀerent spatiotemporal scales. 1–4
+
+The natural route for increasing the length and time scales accessible to simulations is to use a coarse-
+grained (CG) representation of polymer chain. 1–3,5 A CG model is commonly obtained by lumping a group of
+chemically bonded atoms into one superatom (CG bead or particle) and tuning the CG model to reproduce
+some target structural, dynamical, and/or thermodynamic properties of the ﬁne-grained, more detailed,
+model. A systematic parametrization of CG models includes deriving interaction potentials between CG beads
+and/or calibration of the CG model parameters using data from the more detailed atomistic simulations;
+such a procedure is typically called ”bottom-up coarse-graining”.
+
+An alternative to the systematic bottom-up derivation of coarse-grained representations are top-down
+CG models. 6 In these approaches, a universal representation (e. g., a bead-spring model) is adopted that
+only incorporates the relevant interactions, such as the connectivity along the macromolecular backbone
+and the segmental repulsion, limiting ﬂuctuations of the melt density – in a computationally eﬃcient way.
+The strengths of these relevant interactions are related to experimentally measurable quantities, such as the
+spatial extent of the macromolecules in a melt and the isothermal compressibility. Comparing to experimental
+data or lower-scale simulations, the strength of the interactions or time and length scales are identiﬁed for a
+speciﬁc material. Universal models are also widely used for studying (in a qualitative manner) the general
+behavior of polymer materials. 7
+
+Because of the averaging over microscopic details, CG potentials are softer than the corresponding
+ﬁne-grained potentials. However, at low or moderate degrees of coarse-graining (lumping a few atoms in a
+CG bead) the interactions remain strong enough to prevent chain crossing and to preserve entanglement
+constraints between polymer chains. So far, various moderately coarse-grained models, which stay close
+to the microscopic structure, have been proposed in the literature for diﬀerent polymers through diﬀerent
+coarse-graining procedures. Typical examples include the works by Tsch¨op et al. 1,8 who introduced a
+systematic coarse-graining procedure and applied it to derive CG potentials for polycarbonates. They
+generated long atomistic chains, with a proper distribution of torsional angles, through Monte-Carlo (MC)
+simulations and mapped them onto a CG representation by replacing groups of atoms with CG beads. The
+eﬀective bonded potentials (bond length, angle, torsion) of the CG chain were calculated from the Boltzmann
+inverse of the corresponding distributions. Finally, the nonbonded interactions between CG beads were
+adjusted to reproduce the correct density of the polymer. Reith et al. 9 introduced an iterative procedure,
+called iterative Boltzmann inversion, for deriving eﬀective CG potentials. They also determined nonbonded
+CG interactions by matching radial distribution function (RDF) of the CG melt to that of the atomistic
+melt. Harmandaris and collaborators 4,10,11 devised CG models for polystyrene (PS) chains and studied
+the structural and dynamical properties of PS melts. Ohkuma and Kremer 12 studied the properties of two
+diﬀerent CG models (with and without pressure correction) for cis-1,4-polyisoprene. Kempfer et al. 13 used
+a trajectory-matching approach for coarse-graining of cis-1,4-polybutadiene (cPB). In their approach, the
+parameters of the CG model were obtained by optimizing the matching between the trajectory of the CG
+model, produced through DPD simulation, and the reference trajectory of the more detailed model. Recently,
+Shahidi et al. 14 used an inverse Monte Carlo method for constructing local-density dependent CG potentials
+for cis-1,4-polyisoprene; in addition to the conventional bonded and pair distributions, the derived CG
+potentials reproduce the distribution of the nearest-neighbors of the underlying atomistic model. Moderately
+CG models have also been used to study interfacial polymer systems, like polyamide/graphene, 15 PS/gold, 16
+and polyisoprene/graphite 17 systems.
+
+At high degrees of coarse-graining (lumping many atoms in one CG bead), which are necessary for the
+simulation of high molecular weight polymers, pair interactions are very soft and they can not prevent chain
+crossing, and hence, the model fails to capture the topological constraints (entanglements) between polymer
+chains. 3,5,6,18 Therefore, to preserve entanglement eﬀects, which are key features of polymer dynamics,
+additional constraints should be added to the model. 3,5,18,19 To reintroduce the reptation dynamics into
+highly CG models, single-chain and multi-chain slip-link 20–27 and slip-spring (SLSP) 18,28–35 models have
+been developed.
+
+2
+
+Single chain models restrict the motion of monomers by springs. One end of a spring can slide 24 along the
+polymer contour or hop from one segment to a neighboring one along the chain contour. 25 The other end of the
+spring is anchored to a background. These constraints mimic entanglement eﬀects, including constraint release
+and contour-length ﬂuctuations. The anchoring to a background, however, requires additional assumptions to
+describe deformation or ﬂow. 26
+
+In multi-chain SLSP models, the topological constraints are represented by additional springs between
+beads. Reptation is achieved similarly by sliding the springs on both ends along the backbone of the chains.
+Since the constraints are not anchored to the background the models are translationally invariant. Multi-chain
+SLSP models are particularly useful since they can describe complex systems with spatial heterogeneities. 18
+So far, some attempts have been made to parameterize slip-link and SLSP models for speciﬁc polymer
+systems. Sukumaran and Likhtman 5 compared a single-chain SLSP model to the dynamics of the Kremer-Grest
+bead-spring polymer model. Theodorou et al. 36–39 developed an equation-of-state-based multi-chain SLSP
+model, in which the nonbonded interactions are derived from an equation of state (e. g., Sanchez–Lacombe
+equation of state). They used either experimental data or atomistic simulations to parameterize the SLSP
+model for cis-1,4-polyisoprene as well as bulk and interfacial polyethylene systems. Becerra et al. 40 used
+atomistic simulations to parameterize a single-chain slip-link model for poly(ethylene oxide). Recently Wu et
+al. 41 applied hybrid particle-ﬁeld atomistic molecular dynamics simulations to a united atom model of PE; in
+these simulations, the ﬁeld treatment of the nonbonded interactions make them eﬀectively soft. Entangled
+dynamics was recovered by the introduction of SLSPs.
+
+It is clear from the above discussion that the dynamics of polymer melts have been extensively studied
+via diﬀerent simulation methods. However, there are still many challenges related, in particular, to the
+quantitative prediction of the single-chain dynamics and rheology of well-entangled polymers of given chemistry,
+and their direct study over a very broad range of spatiotemporal scales. To achieve this, a systematic linking
+of simulation methodologies across diﬀerent scales is required.
+
+To address the above challenges here we propose a hierarchical (triple scale), mainly bottom-up, simulation
+methodology that involves atomistic, moderately coarse-grained (mCG), and highly coarse-grained SLSP
+simulations to predict the dynamical and rheological properties of polymers, over timescales ranging from a
+few fs up to ms and molecular weights up to the well-entangled regime. As a reference system, we choose
+cPB, which is a well-known elastomer with important industrial applications. At the atomistic level, cPB
+is described through a united atom model. In the mCG model, each monomer of cPB (containing four
+united atoms) is mapped into one bead. This model is close to the chemical structure of PB and still
+allows a signiﬁcant simulation speedup, relative to the atomistic model. In this work, we parameterize a
+SLSP model, which represents a 400-mer chain of cPB by just 32 interaction centers, using our moderately
+coarse-grained (mCG) model. The parameter passing provides a consistent description of static properties, the
+single-chain dynamics, and the collective kinetics on time and length scales, where the highly coarse-grained
+model applies. For this speciﬁc system, we demonstrate that the SLSP model can quantitatively predict
+rheological properties for high molecular weight systems.
+
+The computational requirements of each coarse-grained level are orders of magnitudes smaller than the
+
+next ﬁner description level. All the diﬀerent levels of description of cPB are shown in Figure 1.
+
+2 Atomistic model
+
+At the ﬁnest level, cPB is described using a united atom model. Each PB monomer has four united atom
+groups: two CH2 groups (for end monomers: one CH2 and one CH3) and two CH groups that form a double
+bond (see Figure 1a). A validated force ﬁeld 42–44 proposed by Smith and Paul was chosen for the description
+of the atomistic interactions. However, to preserve stereochemistry during long runs, the torsional potential
+of carbon double bonds in this force ﬁeld was modiﬁed. 44 The MD runs were performed in the NPT ensemble
+at T = 413 K and P = 1 atm. Temperature and pressure were controlled using Nos´e-Hoover thermostat 45,46
+and Parrinello-Rahman barostat. 47 Nonbonded interactions were cut oﬀ at 1 nm and van der Waals tail
+corrections were applied to energy and pressure. The Leap-frog scheme with 1 fs time step was used for the
+integration of equations of motion. We used the open-source package GROMACS 48 to perform the atomistic
+and mCG simulations.
+
+3
+
+Figure 1: Diﬀerent levels of description of cPB. (a) At the ﬁnest level, PB is described through a united atom
+model. (b) At the moderately CG level, each monomer of PB is mapped onto one bead; the CG bead is
+located on the center-of-mass of the monomer. (c) At the highly CG slip-spring level, 12 successive monomers
+of PB are lumped into one CG bead; here, the CG bead is located on the position of the 6th monomer. At
+this level of coarse-graining, the polymer chain is modeled as an ideal Gaussian chain, and entanglements are
+incorporated via slip-springs (red).
+
+3 Moderately coarse-grained (mCG) model
+
+3.1 Parametrization of the mCG model
+
+At the mCG level, each monomer of cPB is mapped onto one coarse-grained bead. For mapping, one mCG
+bead is placed on the center-of-mass of each monomer of the atomistic chains (see Figure 1b). This model has
+the advantage of retaining structural features and therefore conserving the chemical identity of the atomistic
+model. To develop the mCG force ﬁeld, it is assumed that the eﬀective potential energy (in fact, free energy)
+of a mCG bead can be separated into bonded and pairwise nonbonded parts. Furthermore, the bonded
+interactions involve contributions from bonds, angles, and dihedral angles:
+
+U CG = U CG
+
+nonbonded(r) + U CG
+
+bond(l) + U CG
+
+angle(θ) + U CG
+
+dihedral(φ)
+
+(1)
+
+4
+
+Here, r, l, θ, and φ are the distance between two mCG beads, mCG bond length, mCG bending angle, and
+mCG dihedral angle, respectively. Consistent with the above assumption, it is assumed that the probability
+distribution function of l, θ, and φ can be factorized into independent distribution functions:
+
+P (l, θ, φ) = P (l)P (θ)P (φ)
+
+(2)
+
+The probability distribution functions are calculated from the atomistic simulations and then converted
+to mCG potentials through the iterative Boltzmann inversion method. 9 This method iteratively matches
+the probability distribution functions of the mCG model to the respective atomistic distributions, called
+target distributions. Similarly, the nonbonded mCG potentials are obtained by matching the (intra- and
+inter-molecular) radial pair distribution function, g(r), of the mCG model to that of the atomistic model.
+The initial guess for the mCG potentials are the Boltzmann inverse of the target distributions:
+
+U CG
+
+nonbonded, 0(r) = −kBT ln gtarget(r)
+
+U CG
+U CG
+
+bond, 0(l) = −kBT ln(Ptarget(l)/l2)
+angle, 0(θ) = −kBT ln(Ptarget(θ)/ sin θ)
+
+U CG
+
+dihedral, 0(φ) = −kBT ln Ptarget(φ)
+
+(3)
+
+(4)
+
+(5)
+
+(6)
+
+Here, distributions of bond length and bending angle are normalized by taking into account their respective
+volume elements, l2 and sin θ (ignoring numerical prefactors) . 1 The mCG potentials are then modiﬁed in an
+iterative procedure through: 9
+
+U CG
+
+i+1(ξ) = U CG
+
+i
+
+(ξ) + kBT ln
+
+Pi(ξ)
+Ptarget(ξ)
+
+(7)
+
+where ξ stands for r, l, θ, and φ. The iteration is performed until the convergence of all mCG distributions
+to their corresponding target distributions is achieved. Convergence of a distribution is conﬁrmed through
+the minimization of a merit function, deﬁned as:
+
+fmerit =
+
+(cid:82) ξmax
+ξmin
+
+(Ptarget(ξ) − P (ξ))2dξ
+(cid:82) ξmax
+ξmin
+
+target(ξ)dξ
+
+P 2
+
+(8)
+
+Furthermore, to correct the pressure of the mCG model, a pressure correction step is added to the above
+iterative procedure (Equation 7). 9,49 Without applying pressure correction, with similar densities, the pressure
+of the mCG model is usually higher than the pressure of the atomistic model. For the pressure correction, a
+linear term is added to the nonbonded potential function: 9,49
+
+∆U CG
+
+nonbonded(r) = A(1 −
+
+r
+rcut
+
+)
+
+(9)
+
+where A is an empirical constant and rcut is the cut-oﬀ distance for the calculation of the nonbonded
+interactions.
+
+For the development of the mCG force ﬁeld for cPB at 413 K, the reference atomistic simulations were
+performed for 30-mer chains. The developed bonded and nonbonded potentials together with the plots of
+g(r), P (l), P (θ), and P (φ) as calculated from the mCG and reference atomistic simulations are provided in
+Figure 2. For all distributions, a good agreement between the results of the mCG simulation and the atomistic
+simulation is observed, indicating the success of the iterative Boltzmann inversion procedure. All mCG runs
+were performed in the NPT ensemble. Stochastic rescaling thermostat 50 and Parrinello-Rahman barostat 47
+were used to control temperature and pressure. The maximum range of mCG nonbonded interactions was 1.5
+nm and nonbonded interactions were excluded for ﬁrst, second, and third chemically bonded mCG beads.
+The elimination of the fast degrees of freedom (e. g., covalent bond vibrations) and the softness of nonbonded
+potential allow for the increase of the time step in mCG simulations relative to atomistic simulations. For
+mCG simulations, a leap-frog integration scheme with a 5 fs time step was used.
+
+Although the nonbonded interactions of the mCG model are softer than the atomistic one, due to the
+chosen mapping scheme (one mCG bead corresponds to 4 united atoms or one monomer) they are still
+strong enough to prevent chain crossing. In addition, the bonds between mCG beads are ﬁnitely extensible
+(see Figure 2b). Hence, the mCG model respects the topological constraints, something that is required to
+describe polymer dynamics, especially of high molecular weight, entangled, systems.
+
+5
+
+Figure 2: The developed nonbonded and bonded mCG potentials together with the target atomistic local
+structural distributions and the distributions obtained from mCG simulations. (a) Nonbonded mCG pair
+potential and RDF (excluding the ﬁrst three bonded neighbours) of mCG beads (labeled as C4) from atomistic
+and mCG simulations. (b) Bond stretching mCG potential and the distribution of C4-C4 bond lengths. (c)
+Bending potential and the distribution of C4-C4-C4 angles. (d) Torsional potential of the mCG model and
+the distribution of C4-C4-C4-C4 dihedral angles (φ = 0 corresponds to the cis torsional state).
+
+3.2 Chain dimensions
+
+As discussed above, the parameterization of the mCG interactions is performed based on the matching of
+the local structure of the mCG model to that of the atomistic model. Hence, the mCG model reproduces
+the local structure well. It is also important to verify the larger scale dimensions of the atomistic and mCG
+chains. In Figure 3a the mean-squared internal distances, analyzed at the level of monomers, for the atomistic
+and mCG models of 200-mer cPB chains, are shown. In Figure 3a, (cid:104)R2(n)(cid:105) is the end-to-end distance of a
+sub-chain containing n mCG bonds (n + 1 monomers). A reasonable agreement between the internal distances
+of the mCG and atomistic models are observed, however, at large scales, the mCG model has a slightly
+(around 5%) longer internal distances than the atomistic model. In Figure 3b the mean-squared end-to-end
+distances, (cid:104)R2
+g(cid:105), of the atomistic and mCG chains of various
+lengths are presented. Similar to the trend that is observed for 200-mer chain, the end-to-end distances of the
+mCG models are close to those of the atomistic chains. Also, with increasing chain length, the chain-length
+dependence of (cid:104)R2
+g(cid:105) approach the expected Gaussian behavior
+((cid:104)R2
+g(cid:105) ∝ N ). This eﬀect is important to verify for our highest CG model, the SLSP model, which
+models the polymers as ﬂexible chains. For short atomistic and mCG chains (shorter than 30-mer) the (cid:104)R2
+ee(cid:105)
+(cid:104)R2
+g(cid:105)
+values are larger than 6.2; however, with increasing chain length (cid:104)R2
+ee(cid:105)
+g(cid:105) tends to 6.0 which is the expected
+(cid:104)R2
+
+ee(cid:105), and the mean-squared gyration radii, (cid:104)R2
+
+ee(cid:105) and the chain-length dependence of (cid:104)R2
+
+ee(cid:105), (cid:104)R2
+
+6
+
+0.00.51.01.52.0r (nm)0.00.20.40.60.81.01.2g(r)C4, C4(a)atomisticmCG50510152025303540UCG(r) (kJ mol−1)0.20.30.40.50.60.7l (nm)024681012P(l)(b)C4-C4 bondsatomisticmCG020406080100120UCG(l) (kJ mol−1)306090120150180θ (degree)0.0000.0040.0080.0120.016P(θ)C4-C4-C4 angles(c)atomisticmCG051015202530UCG(θ) (kJ mol−1)18012060060120180φ (degree)0.0020.0030.004P(φ)C4-C4-C4-C4 dihedral angles(d)atomisticmCG0.00.51.01.52.0UCG(φ) (kJ mol−1)Figure 3: (a) Mean-squared internal distances, analyzed at the level of monomers, for atomistic, mCG, SLSP
+models of 200-mer cPB. (b) Mean-squared end-to-end distance, (cid:104)R2
+ee(cid:105), and mean-squared radius of gyration,
+(cid:104)R2
+g(cid:105), for the atomistic and mCG model chains of diﬀerent lengths.
+
+value for the Gaussian chains (for chains longer than 30-mer, most of the (cid:104)R2
+ee(cid:105)
+g(cid:105) values are less than 6.05).
+(cid:104)R2
+
+3.3 Time scaling
+
+The prediction of the dynamical properties of the underlying atomistic model through mCG simulations is of
+paramount importance. However, because the friction associated with the fast degrees of freedom that are
+averaged out is ignored in the mCG model (i. e., a calibrated friction is not involved in the CG equations of
+motion), the dynamics of the mCG system is faster than the dynamics of the atomistic one. 3,4 Therefore, it
+is necessary to convert the dynamic quantities of the mCG model to those of the atomistic one. Here, for
+reproducing the atomistic dynamics, the mCG time is scaled by a factor t∗
+mCG, called, time scaling factor. A
+similar procedure has also been used in previous works. 4,10,12
+
+In terms of the Rouse and the tube models, the dynamics of unentangled chains are controlled by a
+monomeric friction coeﬃcient and the dynamics of entangled chains are controlled by a monomeric friction
+coeﬃcient and a tube diameter. 51 Because the mCG model preserves the chemical identity of the atomistic
+model, its tube diameter, which is a geometrical quantity, is expected to be similar to the tube diameter
+of the atomistic system (in subsubsection 5.1.2 we investigate the crossover from the unentangled to the
+entangled regime and atomistic and mCG models exhibit a similar behavior which is consistent with the
+development of a similar entanglement network by both models). So, the faster dynamics of the mCG system
+is attributed to its lower monomeric friction coeﬃcient. Given that the relaxation times of unentangled and
+entangled chains are proportional to monomeric friction coeﬃcient (τ ∝ ζ), 51 the time scaling factor that is
+needed for matching mCG dynamics and atomistic dynamics can be seen as the ratio of their monomeric
+
+7
+
+100101102n (number of mCG bonds)0.00.10.20.30.40.50.6›R2(n)ﬁ/n (nm2)cisPB-200mer(a)atomisticmCGSLSP101102103N (number of monomers)100101102103›R2eeﬁ, ›R2gﬁ  (nm2) ›R2eeﬁ∝N›R2gﬁ∝N(b)atomisticmCGmCG = ζAT
+
+friction coeﬃcients, t∗
+t∗
+mCG would reproduce all dynamical properties of the underlying atomistic model.
+
+ζmCG . 10 Note that, in practice, it should be checked if a single time scaling factor
+
+For the determination of t∗
+
+mCG, we scaled the mCG time to match the overall chain (translational and
+orientational) dynamics at the atomistic level. Translational dynamics is investigated by calculating mean-
+squared displacement (MSD) of monomers, g1(t), and chain centers-of-mass, g3(t). Orientational dynamics is
+studied through the orientational autocorrelation function of the end-to-end vector, P (t), deﬁned as:
+
+P (t) = (cid:104) ˆRe(t) · ˆRe(0)(cid:105).
+
+(10)
+
+where ˆRe is the normalized end-to-end vector and (cid:104)(cid:105) shows averaging over an ensemble of polymer chains,
+which is approximated by all chains in the simulation box and all time origins. In addition, we check the
+mCG model predictions for the shear stress relaxation modulus, G(t), which can be calculated through the
+autocorrelation of shear stresses: 52
+
+G(t) =
+
+V
+kBT
+
+(cid:104)σij(t) σij(0)(cid:105), i (cid:54)= j
+
+(11)
+
+where V , kB, T , and σij are volume of the system, Boltzmann constant, temperature, and an oﬀ-diagonal
+component of the stress tensor, respectively. (cid:104)(cid:105) shows averaging over the oﬀ-diagonal components (for isotropic
+systems) of the stress tensor and time origins. To improve the statistics, one can average over all possible
+orientations of the coordinate system. 52 Multiple-tau correlator algorithm has been used for the calculation
+of G(t). 53
+
+Typically, the mCG time is scaled to match one dynamical quantity, e. g., g1(t), and then the predictions
+of the mCG simulations for other dynamical quantities (e. g., g3(t), P (t), or G(t)) are checked. For short
+chains, it would be more accurate to match P (t), and G(t) as well, using a time scaling factor that is slightly
+diﬀerent from the time scaling factor extracted from ﬁtting g1(t) and g3(t); for 30-mer and shorter chains, the
+time scaling factor needed for matching P (t) and G(t) is around 10–15% smaller than the factor extracted
+from ﬁtting g1(t) and g3(t). Such deviations observed for shorter chains are not unexpected and are related
+mainly to the importance of the chain ends of such systems. Since the interactions of the mCG model involve
+entropic terms, the end monomers should, in principle, be described via a diﬀerent interaction. However,
+since the main goal of the mCG model is to describe high molecular weight systems, such diﬀerences are
+typically ignored. For 100-mer and longer chains, a single scaling factor has been found to describe accurately
+the above-mentioned dynamical quantities.
+
+Figure 4 shows the MSD (g1(t) and g3(t)), P (t), and G(t) for 100-mer cPB, from atomistic and mCG
+simulations (t∗
+mCG = 4.9). As shown in Figure 4a, apart from very short length and timescales (distances less
+than 5 ˚A ≈ the size of the mCG beads), the MSD curves calculated through mCG simulations nicely follow
+the corresponding atomistic ones. Also, as shown in Figure 4b, the P (t) curves calculated through atomistic
+and mCG simulations exhibit a good agreement. The G(t) curves of 100-mer cPB from atomistic and mCG
+simulations are depicted in Figure 4c. At short times G(t) of the atomistic model shows large oscillations.
+The oscillations range from large positive values to large negative values (the negative values are not shown in
+logarithmic scale) and originate from fast motions, e. g., bond vibrations and angle librations, in the atomistic
+model. After such vibrational motions, segmental relaxation and then, polymeric relaxations (Rouse-like and
+reptation-like, see also subsection 5.2) take place. Because of the presence of rather soft bonds, the G(t) of
+the mCG model does not show large oscillations at very short times; however, mild oscillations happen after
+segmental relaxation. The time of the oscillations corresponds to the period of the bond vibration for the
+mCG chain, which is around 400 fs, before scaling. Similar to the results of MSD, after very short timescales
+(after the segmental relaxation time), the mCG model reproduces the G(t) of the atomistic model well.
+
+The time scaling factor, t∗
+mCG is presented in Figure 5. By increasing chain length, ﬁrst t∗
+
+mCG, is chain-length and temperature dependent. The chain-length dependence
+of t∗
+mCG increases and then converges to a
+constant value. A similar trend has been reported in previous works. 10,12 The chain-length dependence of
+the density is also shown in Figure 5. The densities were calculated from atomistic simulations; however,
+because of the application of pressure correction, the densities of the mCG melts are very similar to the
+atomistic ones (for all chain lengths, the diﬀerence is less than 1.5%). The chain-length dependence of t∗
+mCG
+is in phase with the chain-length dependence of density. This behavior can be justiﬁed in terms of the free
+volume theory 54,55 which attributes the chain length dependence of both density and monomeric friction
+
+8
+
+Figure 4: (a) MSD for chain center-of-mass (g3(t)) and monomer center-of-mass (g1(t)) for 100-mer chains of
+cPB at 413 K through atomistic and mCG simulations. (b) Orientational autocorrelation function, P (t),
+of end-to-end vector and (c) stress relaxation modulus, G(t), for 100-mer cPB through atomistic and mCG
+simulations. In all cases, the mCG times are scaled with a single time scaling factor (t∗
+mCG = 4.9), computed
+by scaling the mCG time to match the atomistic g1(t) in the long time (diﬀusive) regime.
+
+coeﬃcient, ζ, of a polymer melt to the excess free volume accompanying chain ends; however, for long chains,
+the contribution of chain ends in the free volume of the polymer melt becomes negligible and the density and
+ζ remain constant.
+
+It is assumed that the chain length dependence of the fractional free volume, f , of a polymer melt is
+similar to the chain length dependence of its speciﬁc volume. At a ﬁxed temperature, the relations between ζ,
+
+9
+
+10-310-210-1100101102103104t (ns)10-210-1100101102103MSD(t)  (nm2)CisPB-100mert1(a)g1(t), atomisticg1(t), mCGg3(t), atomisticg3(t), mCG10-310-210-1100101102103104t (ns)0.00.20.40.60.81.0P(t)(b)atomisticmCG10-610-510-410-310-210-1100101102103t (ns)10-1100101102103104105106G(t) (bar)(c)atomisticmCGFigure 5: Chain-length dependence of time scaling factor, t∗
+and mCG MSDs, at 413 K. Additionally, the chain length dependence of density, ρ, and (inset) t∗
+are presented.
+
+mCG, calculated through matching of atomistic
+mCG vs. ρ
+
+f , and density are as follows: 54,55
+
+ζ(M ) = ζ∞ exp(B(
+
+1
+f (M )
+
+−
+
+1
+f∞
+
+)),
+
+f (M ) − f∞ = 1 −
+
+ρ(M )
+ρ∞
+
+(12)
+
+where f∞, ρ∞, and ζ∞ are fractional free volume, density, and monomeric friction coeﬃcient of very high
+molecular weight melts, and B is a constant of order of unity. 54,55 Based on the above expression, it is
+ζmCG , tend to constant values. 10,56 Also,
+expected that when ρ → ρ∞, ζ AT and ζ mCG, and therefore t∗
+when ρ is close to ρ∞, Equation 12 becomes a linear relation between ln ζ (and therefore ln t∗
+mCG) and ρ. Inset
+of Figure 5 shows that values of t∗
+mCG as a function of ρ. With increasing density, the monomeric friction
+coeﬃcients of both atomistic and mCG melts increase; however, the increase of t∗
+mCG with density shows that
+the increase of ζ is larger for the atomistic model than for the mCG one. The constant value of t∗
+mCG for long
+chains can be used to simulate the dynamics of long chains, for which the atomistic simulation is not feasible.
+The above-mentioned procedure for the prediction of the dynamics of the atomistic model through mCG
+simulations applies to the study of the dynamics of structurally complex polymers, e.g., long-chain branched
+polymers; however, the value of the time scaling factor might be slightly diﬀerent than that of linear chains.
+
+mCG = ζAT
+
+4 Slip-spring (SLSP) model
+
+In our highly coarse-grained SLSP model, a polymer is represented by a string of beads. A single bead
+or CG segment represents multiple monomeric repeating units of an atomistic model. In the present cPB
+SLSP model, a coarse-grained bead approximately represents 12 monomers (or 48 united-atom groups).
+The Kuhn length of cPB chains is approximately equal to 1nm, corresponding to ≈ 9 backbone bonds (or
+10 CHx groups), 44 i. e., 12 monomers are comprised of 5.2 Kuhn segments. We chose 12 as the degree of
+coarse-graining, because it is the smallest number of monomeric repeating units that allows a description via
+the ﬂexible Gaussian chain model, compare with Figure 3. We should note that it might be advantageous to
+employ SLSP models with a larger degree of coarse-graining to eﬃciently simulate longer chains on larger
+spatiotemporal scales (thereby potentially losing resolution on the scale of the tube diameter). However,
+the parameterization of such even coarser CG models would require data from (computationally expensive)
+mCG-based simulations of longer chains than what is needed for the SLSP model with a smaller degree of
+coarse-graining. In any case, the parameter-passing strategy would be similar to the strategy used here. In
+the following, we use a chain of NSLSP = 32 beads to describe a 400-mer cPB molecule (and account for the
+mismatch by ignoring the 8 monomeric repeating units at the ends of the mCG chain in the analysis).
+
+10
+
+050100150200N (chain length)2.53.03.54.04.55.05.5t∗mCGt∗mCG800810820830840850860870ρ (kg m−3)ρ800830860ρ (kg m−3)100101t∗mCGThe parameterization of the SLSP model is performed based on the results of the mCG simulations.
+To transfer information between mCG and SLSP levels, ﬁrst, the mCG coordinates should be mapped to
+the mesoscopic SLSP presentation. To map mCG coordinates to SLSP coordinates, for each successive 12
+monomers, a CG bead is placed on the position of the monomer that has the median index (here, on the 6th
+monomer). Let 0 ≤ imCG < 400 denote the bead index in the mCG model, then the position of the ith bead
+of the SLSP model coincides with the coordinate of the mCG bead with index imCG = 13 + 12i, see Figure 1.
+A similar mapping scheme has been used before. 37
+
+One can think of an alternative mapping scheme, in which a CG bead is placed on the center-of-mass of
+each successive 12 monomers (similar to mapping atomistic coordinates to mCG coordinates). To compare
+these two mapping schemes, we applied them to cPB, as well as to an ensemble of ideal chains (freely jointed
+chains). The distribution of bead-bead-bead angle (after mapping) for cPB and ideal chains are provided
+in Figure 6. It is clear that for both cPB and ideal chains, the center-of-mass mapping scheme leads to a
+non-random distribution of angles between three successive beads. Such behavior has also been previously
+observed for CG models of polyethylene. 37
+
+Figure 6: Distributions of bead-bead-bead angle (P (cos θ)) through median index (med) and center-of-mass
+(com) mapping schemes. The results are shown for cPB and the ideal chain. For cPB one bead represents 12
+monomers and for the ideal chain, one bead represents 12 nodes of the chain.
+
+It is instructive to consider these two mapping schemes for an ideal chain with bead positions ri and
+uncorrelated bond vectors bi = ri+1 − ri. For a degree of coarse-graining of 2 and the center-of-mass mapping,
+the scalar product of two successive, coarse-grained bond vectors, bCG
+2 [b0 +2b1 +b2]
+and bCG
+(cid:54)= 0. There are
+no next-nearest or higher bond correlations and the mean-squared length of a coarse-grained bond is
+(cid:104)(bCG)2(cid:105) = 3
+
+2 [b2 + 2b3 + b4| does not vanish (cid:104)bCG
+
+2 [r5 + r4 − r3 − r2] = 1
+
+2 [r3 +r2 −r1 −r0] = 1
+
+(cid:105) = (cid:104)b2(cid:105)
+4
+
+1 = 1
+
+0 = 1
+
+0 bCG
+1
+
+2 (cid:104)b2(cid:105).
+
+On the contrary, identifying every second bead position with the position of a coarse-grained bead, we
+0 = r2 − r0 = b0 + b1 and bCG
+0 = r4 − r2 = b2 + b3, yielding
+(cid:105) = 0. There are also no next-nearest or higher bond correlations and the mean-squared length of a
+
+obtain for the coarse-grained bonds bCG
+(cid:104)bCG
+coarse-grained bond is (cid:104)(bCG)2(cid:105) = 2(cid:104)b2(cid:105).
+
+0 bCG
+1
+
+Figure 6 demonstrates that choosing every 12th mCG bead position also results in a random angular
+distribution for the ideal chain. There remains, however, a slight deviation for cPB chains. These residual
+bond-angle correlations arise (i) because a 12-mer only comprises 5.2 Kuhn segments and (ii) due to the
+incompressibility of the melt, resulting in universal, power-law, bond-bond correlations. 57 The latter universal
+eﬀect is also present in the highly coarse-grained SLSP model. The former eﬀect could be accounted for in
+the SLSP model by a bond-angle potential or could be reduced by choosing a larger degree of coarse-graining.
+In the following, however, we neglect this small deviation for computational convenience. As we base our
+parameter passing on the end-to-end distance, the large-scale structures of the mCG and SLSP models
+coincide, but the bond length of the fully ﬂexible SLSP model is slightly longer than an SLSP model with
+positive correlations between successive bonds.
+
+11
+
+1.00.50.00.51.0cosθ0.00.20.40.60.81.0P(cosθ)cPB-med1:12cPB-com1:12ideal_chain-med1:12ideal_chain-com1:12SLSP modelThe interaction potential between CG beads is soft, i. e., beads can fully overlap without divergence of
+the nonbonded energy, in marked contrast to the two previously discussed, ﬁner levels of modeling. The
+softness arises from a systematic coarse-graining procedure. 58 The reduction of the degrees of freedom and
+the softness of the potentials in highly coarse-grained models, allowing for larger time steps, give rise to a
+signiﬁcant computational speed-up.
+
+Moreover, softness is necessary to represent the large invariant degree of polymerization, ¯N = ( ρ
+
+e0)2 =
+(ρb3)2N that characterizes experimental systems. 6 Here ρ, N , and b denote the bead density, the number
+of beads per chain, and the statistical segment length, respectively. To represent a large value of ¯N , one
+can either increase N at ﬁxed ρ and b or increase the degree of coarse-graining such that N of the highly
+coarse-grained chain model remains unaltered but increase ρb3 instead. The latter is computationally much
+more convenient. 6 Harsh repulsive interactions on a length scale σ, however, do not allow for an increase
+of the segment density beyond ρσ3 ∼ O(1) because the system either crystallizes or vitriﬁes. Additionally
+requiring that the combination of segmental repulsion and ﬁnite bond length, l, prevents chain crossing,
+yields the condition σ ≈ l ∼ b, where the last relation holds for ﬂexible chains. Thus, it is diﬃcult to increase
+ρb3 signiﬁcant beyond order 1 for ﬂexible chain models, in which pairwise interactions prevent chain crossing
+and large invariant degrees of polymerization necessitate a ﬁne discretization of the chain contour.
+
+N R3
+
+We perform all simulations of the SLSP model with the GPU accelerated simulation software HOOMD-
+blue 59–61 with custom SLSP-plugins. The combination of a highly coarse-grained model with modern,
+GPU-accelerated computers expands the study possibilities of the two previous models to higher molecular
+weights and longer timescales.
+
+The nonbonded interaction of the model employed in our molecular dynamics simulation is an empirical
+pairwise potential. The potential has a two-fold purpose: (i) It suppresses density ﬂuctuations and (ii)
+controls the repulsion of unlike bead types (in multicomponent systems). The potential is soft and quadratic,
+and it takes the form
+
+Vnb(r) = Aij
+
+kBT
+2
+
+(cid:18)
+
+1 −
+
+(cid:19)2
+
+|r|
+σ
+
+for |r| < σ.
+
+(13)
+
+σ deﬁnes the interaction range of this potential. The parameter Aii correlates to the inverse compressibility
+and Aij controls the repulsion of unlike bead types. The subscript ij indicates the type of interacting particles.
+In this work we only describe beads for i =cPB, hence there is only a single interaction parameter Aii. To
+convert the simulations from the microcanonical ensemble (NVE) to the canonical ensemble (NVT) we add
+random forces and friction according to the dissipative particle dynamics (DPD) thermostat. 62 We use a
+friction and ﬂuctuation value γDPD = 1/τ for all reported simulations with the SLSP model. We choose this
+value to allow an early transition from ballistic motion to overdamped motion. For a more detailed discussion
+of this DPD parameter and its eﬀect in the context of the SLSP model, we refer to Ref. 63
+
+For this work we selected a nonbonded interaction parameter of Aii = 5. In previous works, we have used
+values Aii smaller by as much as an order of magnitude Aii. 18 Using the higher value does not guarantee a
+clear separation in strength between bonded and nonbonded interactions. However, the advantage of this
+higher value is that the compressibility characteristics of the melt are closer to the mCG and atomistic
+description. The empiric potential does not feature an attractive tail so the measured pressure is large
+compared to the experiment. Adjusting the pressure would require a longer-ranged attractive interaction
+that does hardly inﬂuence the liquid structure but signiﬁcantly adds to the computational costs. If required
+the eﬀect of such an additional attraction could be accounted for by thermodynamic perturbation theory. 64
+The Ncg beads are bonded along the backbone by a bond-length potential that not only captures the
+Gaussian equilibrium statistics but, additionally, mimics the reduced extensibility for strong elongations and
+accounts for corrections to the limit of large degree of coarse-graining.
+
+Vb(r) =
+
+k2
+2
+
+r2 +
+
+k4
+2
+
+r4.
+
+(14)
+
+with r being the distance between bonded neighbors. In the limit k4 = 0 the potential coincides with the
+discretized Edwards Hamiltonian of a Gaussian chain. 65
+
+The harmonic potential is a direct consequence of the coarse-graining procedure in the limit of inﬁnitely
+long chains. If the degree of coarse-graining is much larger than the Kuhn length, a highly coarse-grained
+bead is comprised of many Kuhn segments. The end-to-end distance of such a subchain that is represented
+
+12
+
+Figure 7: Distribution, p(z), of the extension of 12-mer subchain in a polymer of 100 or 400 monomeric
+repeating units, obtained by simulations of the mCG model. For the highly coarse-grained SLSP model a
+12-mer is represented by a single bead. The speciﬁc shape of the mCG distribution depends on the chain
+length, as demonstrated with ﬁts to 400-mer and 100-mer data set. We assume a Boltzmann distribution
+exp(−Vb(r)/kBT ) for the bond-length distribution to ﬁt the free parameters of diﬀerent bond potentials.
+This assumption is veriﬁed by data of the SLSP model shown as stars.
+
+by a coarse-grained bead is the sum of many, independent, identically distributed contributions and its
+distribution converges towards a Gaussian. Therefore top-down models utilize harmonic bonds that represent
+the relevant property – chain connectivity – in a universal and computationally eﬃcient way.
+
+Here we go beyond this top-down strategy. The additional fourth-order term in Equation 14 is a ﬁrst,
+systematic attempt to incorporate deviations from the asymptotic Gaussian behavior that occurs for small
+degrees of coarse-graining. The speciﬁc shape of using a fourth-order expansion is inspired by the original
+description of Kuhn et. al. 66 for an inverse Langevin, which were appropriate if we model a freely jointed
+chain (FJC) model. Moreover, in nonequilibrium situations that include the stretching of chains, the
+Gaussian chain model may no longer be appropriate. An intuitive example is the contour length. As it is
+well-known, 66,67 any real chain has a ﬁxed contour length but this constraint is not enforced in a Gaussian
+chain.
+
+We examine possible deviations from the Gaussian behavior by monitoring the bond extension, z, along a
+speciﬁed axis (for isotropic bulk polymer melts, all axis are equivalent). In the Gaussian chain model with
+harmonic bonds this distribution, p(z), is Gaussian. However, the distribution of distances between 12-mers –
+the length of an SLSP bead – in a 400-mer chain shows a stronger decay for large bond lengths.
+
+Figure 7 visualizes the results of the mCG model in comparison to the Boltzmann distributions of single
+bonds in the SLSP model. Fitting the distribution to the data from the mCG simulations allows us to
+determine the optimal parameters for our bond potential. We illustrate this procedure for the harmonic,
+expanded fourth-order, and ﬁnite extensible nonlinear elastic (FENE) potential. All three potentials provide
+a reasonable ﬁt to the mCG data, yet small but systematic deviations can be appreciated in the inset that
+highlights the tails of the distribution on a logarithmic scale. The harmonic potential overestimates the
+weight of the tails in the distribution. The FENE potential has a ﬁnite length as it is required to obtain a
+ﬁnite contour length and, in turn, underestimates the weight of the tails of the distribution. We obtain the
+
+13
+
+0.00.20.40.60.81.01.2z/0.00.20.40.60.8p(z)mCG data (400mer)SLSP data (400mer)harmonic fitFENE fitfourth order fit (400mer)fourth order fit (100mer)1.01.11.21.31.4102101best ﬁt with the fourth-order potential from Equation 14.
+
+The parameters of the fourth-order potential slightly depend on the chain length in the mCG model
+system. However, we are interested in a universal, chain-length independent bond potential. As a compromise
+we utilize the parameters k2 ≈ 3.30kBT /σ2 and k4 = 2.41kBT /σ4 for the fourth order potential. The resulting
+distribution provides a good agreement in the center as well as in the tails of the distribution and improves
+upon the harmonic or FENE potential. We identify the basic length scale, σ, of interactions in the SLSP
+model by the root-mean-squared bond length, b0 = 0.75σ
+
+The use of soft, CG polymer models to study dynamics poses challenges that are addressed by speciﬁc
+extensions to the standard bead-spring model: To analyze the dynamical characteristics of long polymers it
+is vital to include entanglement eﬀects. Unfortunately, the inevitable softness of the nonbonded interactions
+in a highly CG model does not implicitly prevent backbone-crossing. To compensate this eﬀect, we use the
+SLSP model, 18 which represents entanglements via additional bonds – slip-springs (SLSPs). The dynamics
+of SLSPs is designed to accurately mimic the reptation motion of long polymer chains in a dense melt, going
+beyond the classical tube model 51 by including constraint release and contour-length ﬂuctuations 24 and
+allowing the study of spatially inhomogeneous systems. 29
+
+The SLSP model 18 adds additional bonds to the system, which enforce spatial constraints similar to
+entanglements. As will become apparent later, the bond potential has to be of ﬁnite range, so we use the
+FENE potential
+
+Vss(r) = −
+
+kssr2
+ss
+2
+
+(cid:34)
+
+log
+
+1 −
+
+(cid:19)2(cid:35)
+
+.
+
+(cid:18) r
+rss
+
+(15)
+
+The maximum extension is set for eﬃciency reasons to rss = σ, i. e., the interaction range of the nonbonded
+potential. The origin of the SLSP force is the same as the backbone potential, however, for technical reasons
+the potential has to be of ﬁnite range so we opt for the FENE potential, with force constants that mimics
+the backbone potential. 18 The insertion and movement of the additional slip spring bonds are governed by
+kinetic Monte-Carlo moves, sampling the grand-canonical ensemble. The chemical potential µ of the slip
+springs dictate the average number of SLSPs. More commonly we use the fugacity z = exp(βµ) ∝ nss, which
+is directly proportional to the number of SLSPs. The introduction of additional bonds into the systems
+changes the system properties, especially the pressure. To eliminate this eﬀect, an additional, repulsive pair
+potential is introduced
+
+Vcomp(r) = zkBT exp(−βVss(r)).
+
+(16)
+
+This potential exactly compensates the introduction of the slip springs in the partition function. 18 Thus, all
+static properties remain unchanged, independent of the SLSP fugacity, z. Only the dynamical properties
+change to incorporate the eﬀect of entanglements.
+
+The dynamics of the SLSPs is governed by kinetic MC moves, designed to mimic reptation dynamics.
+The MC move that attempts to slide each SLSP along the backbone (reptation) and the MC move that
+transfers SLSP from one chain end to another (dis/re-entanglement and constraint release) are applied with
+a frequency of ∆t = 0.5τ . This timescale corresponds to the relaxation time of a bead in our highly CG
+model, i. e., beads, and SLSP move on the same timescale. Speciﬁcally, the MSD of beads within 10τ is
+about the average length of the backbone bonds. The attempt frequency of the MC move is high enough to
+not signiﬁcantly change the dynamics if the frequency were further increased. These two MC moves – SLSP
+sliding and end-transfer – suﬃce to study the dynamics but the number of SLSP remains constant.
+
+Additionally, we apply a MC move that attempts to create or delete new SLSP at the chain ends. This
+MC move realizes the grand canonical SLSP ensemble. The MC move is computationally more expensive
+and thus is attempted only every ∆t = 10τ . The MC that control the creation and deletion of SLSPs at
+the end of the polymer molecules controls the tube renewal in the entangled systems. The chosen update
+frequency is high enough that the tube renewal in accordance with the diﬀusion of the individual particle
+beads. Increasing the frequency further does not change the result, but a lower frequency eventually leads to
+delayed tube-renewal dynamics. As a result, the transition into free diﬀusion of the tube would happen later
+than justiﬁed by the number of topological constraints present in the system.
+
+14
+
+4.1 Parametrization of the SLSP models
+
+Utilizing the SLSP model to predict properties of real polymeric systems requires a mapping of the model
+parameters to physical units. In our systematic approach, this parameter matching builds upon the results of
+two ﬁner-grained models – the atomistic and moderately coarse-grained (mCG) model. In this section, we
+detail how we use the results of the mCG model to identify the length and timescale of the SLSP model for a
+speciﬁc polymer, cPB. We use the results of the mCG model for a 400-mer melt because this longest chain
+length, accessible to the lower-scale models, exhibits the most pronounced entanglement eﬀects.
+
+√
+
+One particularly important characteristics of our soft, CG modeling strategy is the independent mapping
+of static equilibrium properties and of dynamical properties of polymer melts. First, we identify the length
+scale to match the static single-chain properties of a 400-mer cPB system. The conﬁgurations of long ﬂexible
+polymer chains in a dense melt are characterized by a single relevant length scale – the mean-squared
+end-to-end distance, (cid:104)R2
+0 = N (0.75σ)2. By
+ee(cid:105). In the absence of nonbonded interactions we obtain R2
+matching this chain extension to the result of the mCG model, (cid:112)(cid:104)R2
+ee(cid:105) = 13.446 nm for a 400mer cPB, we
+identify the internal unit of length, σ, in our simulation model, σ = 3.07 ± 0.06 nm.
+
+e0 = N b2
+
+N R3
+
+The invariant degree of polymerization
+
+e0 ≈ 1.0552. This minor, state-dependent eﬀect is neglected in the following.
+
+¯N = ρ
+e0 quantiﬁes the chain density and is independent from
+¯N ≈ 59.3.
+the degree of coarse-graining. The density and chain extension of the mCG model corresponds to
+This density requires n = 926 chain in the SLSP model for a cubic simulation box with length L = 2.5Re0.
+In a melt, the ratio between the bare R2
+e0 and the actual measured end-to-end distance slightly depends on
+chain length and density, due to the chain end eﬀect. For the speciﬁc system the ratio adopts the value,
+(cid:104)R2
+
+ee(cid:105)/R2
+Second, we adjust the parameters of our model to match the dynamics of the mCG model. We note that
+the parameters that dictate the dynamics are independent of those that determine the static properties. The
+unentangled dynamics require the identiﬁcation of segmental friction and the timescale mapping, t∗
+SS, between
+our soft, CG model, and the results of the mCG model. We have reduced the monomeric friction but the
+crossover from ballistic to diﬀusive segment motion still occurs on short time scales that are irrelevant to
+the analysis. For the longer, entangled chains, we additionally adjust the SLSP parameters, i. e., the SLSP
+fugacity, z.
+
+√
+
+In the spirit of top-down modeling, we could adjust t∗
+
+SS and z to match experimental data. Here, instead,
+we follow a diﬀerent approach using the available data of the mCG model to identify the timescale factor
+and SLSP fugacity. This parameter passing is based on the expectation that the SLSP model does not only
+capture the dynamics of well-entangled polymer melts but also accurately describes the broad crossover from
+unentangled to entangled polymer dynamics.
+
+To identify the timescale and SLSP fugacity, we decided to focus on the decorrelation of the normalized
+end-to-end vector P (t) (cf. Equation 10). This quantity is particularly suited to determine the timescale
+matching between the mCG model and SLSP model because it can be determined with high accuracy in
+both models and allows an accurate timescale matching due to its characteristic decay.
+
+For the two extreme descriptions of entanglement eﬀects – the Rouse model 68 and the tube model 51 –
+there exist explicit predictions for P (t). In the Rouse model, appropriate for unentangled, short polymer,
+P (t) adopts the form: 51
+
+PRouse(t|τR) =
+
+(cid:88)
+
+p:odd
+
+8
+p2π2 exp(−p2t/τR)
+
+(17)
+
+with τR being the Rouse time. The tube model 51 predicts the identical shape, Ptube(t) = PRouse(t|τd), but
+the characteristic timescale is the disentanglement time, τd.
+
+For the timescale mapping, we scale the intrinsic simulation time of the SLSP model by a factor t∗
+SS to
+match the results of the mCG model. Since we allow this time scaling, the Rouse model and the tube model
+predict the identical shape of P (t), making it a robust quantity to match the timescale over the entire regime
+of molecular weights.
+
+Figure 8 illustrates this timescale matching via the end-to-end vector correlation P (t). By choosing
+multiple (here two) diﬀerent ”match points”, tm, to overlay the results, we visually demonstrate that the
+shape of P (t) depends on the entanglement density. This deviation is present for the results of the mCG
+model and all SLSP results, with z > 0.
+
+15
+
+(a) Matching the timescale t∗
+
+SS for short timescales.
+
+(b) Matching the timescale t∗
+
+SS for long timescales.
+
+Figure 8: Timescale matching via the end-to-end vector correlation P (t). The matching is obtained by
+horizontally shifting results of the SLSP model (on a logarithmic scale) until they overlay the mCG results
+at the ”match point”. In general, agreement at diﬀerent ”match points”, tm, is observed for a diﬀerent
+combination of timescale, t∗
+SS, and SLSP fugacity, z, because the shape of the curve depends on the
+entanglement density. Only for the speciﬁc SLSP fugacity z ≈ 0.0228, is the resulting timescale mapping, t∗
+SS,
+independent of the ”match point”, tm. For reference, we also present P (t) of the Rouse and tube model. It
+matches the results of z = 0, i. e., no SLSPs.
+
+A deviation is expected because the 400-mer polymer chains are long enough to deviate from the Rouse
+model but yet not suﬃciently long to comply with the idealization of the tube model, which only applies to
+strongly entangled melts since the tube model neglects constraint release and contour-length ﬂuctuations.
+The deviation of the mCG model indicates that these eﬀects are relevant, particular for the rather short
+chains. The fact that these deviations are also observed in the SLSP model demonstrates that the SLSP
+description goes beyond the Rouse and tube models respectively.
+
+We can use the shape changes, as depicted in Figure 8, to determine not only a timescale mapping but
+also the optimal number of SLSP per chain, controlled by the fugacity, z, in our SLSP model. The premise
+is: For the optimal number of SLSP per chain is the mapping factor t∗
+SS independent of the ”match point”,
+where the result is overlaid. Hence, we use the two chosen ”match points”, for short and for long times, and
+plot the matching factor t∗
+
+SS as a function of the SLSP fugacity, z.
+
+Figure 9a demonstrates how the timescale mapping varies for diﬀerent SLSP fugacities z, depending on
+the property, for which the mapping is constructed. For the already discussed mapping of P at diﬀerent
+match points, tm, this gives rise to diﬀerent shapes of P (t) (because z is a function of tm). If the shape were
+optimally reproduced by the SLSP model the time mapping factor t∗
+SS would be independent of tm. This
+strategy identiﬁes the optimal combination of z and t∗
+SS = 0.0132 µs/τ . There exists
+an alternate approach to identify the timescale via the long-time diﬀusion, quantiﬁed by the MSD. This
+strategy has been discussed earlier for the mapping between the atomistic model and the mCG model and
+also provides a relation t∗
+SS(z) that is presented in Figure 9a. Gratifyingly, this curve passes through the
+optimal combination identiﬁed by matching P (t), indicating that we have obtained a consistent timescale
+mapping for multiple, single-chain properties.
+
+SS, i. e., z ≈ 0.0228 and t∗
+
+This optimal fugacity, z ≈ 0.0228, corresponds to roughly nss/n ≈ 6.3 SLSP per chain (see Figure 9b that
+depicts a linear dependence of nss on z, verifying our SLSP simulation code). Each anchor of an SLSP poses
+a topological constraint for the polymer motion. Although, there is no one-to-one correspondence between
+the SLSP constraints and entanglements, 18,29,30 the number of SLSP constraints ≈ 12.6 is in the same order
+of magnitude as the number of entanglements expected for a 400-mer cPB polymer. For cPB at T = 298 K,
+Me ≈ 2900 g mol−1 has been reported for the molecular weight of a chain portion between entanglements. 54
+Based on this value of Me, 400-mer chains (M = 21.6 kg mol−1) have around 7.5 entanglements per chain.
+Due to the limited number of experimental data for pure cPB, we also compare to the experimental value
+Me ≈ 1800 g mol−1 for 1,4-PB (mainly containing cis and trans bonds) at 413 K; 69 based on this estimate, a
+
+16
+
+(a) Time mapping factor t∗
+SS obtained via diﬀerent
+procedures as a function of the fugacity z. The z
+where all methods agree, determines the optimum.
+
+(b) Number of SLSPs as a function the SLSP fugacity
+z. For the optimum z = 0.0228, we have nss/n ≈ 6.3.
+The linear prediction of Ref. 18 is replicated.
+
+Figure 9: Timescale mapping t∗
+SS for the SLSP model obtained via matching diﬀerent properties. The
+end-to-end vector correlation, P (t), oﬀers two diﬀerent times ”match points” (see Figure 8) and the long-time
+diﬀusion allows for a timescale mapping as well.
+
+400-mer chain has around 12 entanglements.
+
+Figure 10 compares the MSD of the SLSP model for diﬀerent fugacities z to the results of the mCG
+model, using the aforementioned long-time MSD to match the timescales. We observe the power laws that
+are the hallmark of entangled dynamics for systems with large z, already for the small contour discretization,
+Ncg = 32. Plotting g1(t)/
+
+t, we highlight exponents smaller than 1/2.
+
+√
+
+The comparison between the mCG results and the data of the SLSP model, however, reveals deviations
+on short timescales. Speciﬁcally, the SLSP model exhibits a larger MSD at times shorter than t (cid:46) O(µs),
+corresponding to the length scale of a bead of the SLSP model or the tube diameter, i. e., g1(1µs) ≈ 3.56σ2. 1
+We observe non-negligible deviations between the MSD of mCG and the SLSP model for time scales
+below t > 10µs whereas the the relaxation modulus G(t) and the end-to-end relaxation P (t) already agrees
+for t > 1µs. The diﬀerence between the observable is that the monomer MSD (g1) is sensitive to the motion
+of individual beads or segments, while for the G(t) and P (t) characteristics of the orientation of the chain as
+a whole are more relevant. It is natural to expect that the more coarse-grained models can represent the
+large molecule scales more accurately. This is a reason why we selected the end-to-end distance correlation
+P (t) to match time scales and entanglement density. This relation of accuracy discrepancy is not unique
+to the model transition from mCG to SLSP, we observe similar characteristics for the transition between
+the atomistic and mCG model. The mCG model provides a faithful description of the MSD for t > 0.2ns,
+whereas G(t) agrees with the atomistic model already for t > 0.01ns (Figure 4).
+
+We note that smaller fugacities, z ≤ 0.1, appear to agree somewhat better on short timescales. Such small
+values of z, however, are not consistent with the dynamics of the end-to-end vector. We hypothesize that
+(i) the ﬂuid-like packing structure and the more complex bonded interactions of monomeric repeating units
+in the mCG model aﬀect this short-scale dynamics and (ii) the constraining tube formed by the SLSP may
+be somewhat softer compared to the eﬀect of true non-crossability. This comparison identiﬁes the smallest
+timescale, above which our SLSP model for cPB can provide accurate predictions. The dynamical properties
+on shorter scales can be covered by more detailed models.
+
+1The crossing of the data sets for very short times, t ≈ 10−2µs, stems from (i) the small number of Rouse modes in the SLSP
+model and (ii) the deferred crossover between the ballistic and overdamped dynamics in the SLSP model where the segmental
+friction does not only depend on the interactions but additionally on the strength of the DPD thermostat.
+
+17
+
+0.000.010.020.030.040.050.06z106105104t*SS [ns/]Re autocorrelation (long)Re autocorrelation (short)long time MSD diffusionbest z0.000.010.020.030.04z024681012nss/ndatalinear fit(a) Monomer MSD g1 shows power-law behavior char-
+acteristic of entangled dynamics for diﬀerent SLSP
+fugacities z and identiﬁes the shortest timescale, when
+the SLSP model coincides with the mCG model.
+
+(b) Monomer g1 and center of mass g3 MSD with the
+optimal SLSP fugacity z = 0.0228 compared to the
+data of the mCG model.
+
+Figure 10: Comparison of MSD of the mCG and SLSP models.
+
+4.2 Rheological properties
+
+Having identiﬁed the parameters and scales of the SLSP model by comparing the single-chain statics and
+dynamics to the mCG model, we can now investigate the collective, rheological properties to validate our
+model.
+
+The autocorrelation of the non-diagonal elements of the stress tensor (shear stress relaxation modulus,
+G(t)) is of particular interest to many applications related to the rheology of polymer systems. For the
+SLSP the bonded and non-bonded stress is calculated for each chain. To assign the stresses to individual
+chains, ﬁrst, all virials of conservative forces are attributed to individual particles. In our calculation, we
+ignore the force contribution from the DPD thermostat. The virial of an interacting pair is equally assigned
+to the involved particles. In a second step, the particle virials are summed up in each polymer chain. For
+more details on this chain average technique and its implication for the stress autocorrelation G(t), refer to
+appendix A.
+
+For a comparison between the models, we adjust them to match the shear modulus, G0, because of the
+softness of the interactions in the SLSP model. To this end, we select a match point and vertically shift the
+curves on a logarithmic scale.
+
+Data are shown in Figure 11. We observe reasonable agreement between the mCG and the SLSP model
+for the previously determined entanglement density z = 0.0228. In particular, this agreement extends to the
+terminal decay time of G(t), validating our timescale matching. Note, however, that even with advanced
+averaging methods such as the multiple-tau-correlator algorithm 52 G(t) is plagued by rather high uncertainty.
+Only at shorter times, the curves slightly deviate. This is, however, expected because the mCG model
+includes local dynamical modes that are integrated out in the SLSP model. The shortest timescale, on which
+agreement is expected, is on the order of µs and the observed deviations are on shorter timescales.
+
+4.3 Transferability of slip-spring model parameters
+
+The idea of the hierarchical (consecutive) systematic coarse-graining is to be able to predict quantitatively
+material properties, of high molecular weight, entangled, systems, with the highest CG model because of its
+computational eﬃciency. For this goal, it is important to achieve the transferability of the obtained matching
+parameters to other molecular weights. In the previous section, we demonstrated how we can obtain the
+matching parameters between the mCG model and the SLSP. Before moving on to higher molecular weights
+we demonstrate this transferability by simulations of 200-mer melt because it is still tractable by both, the
+mCG model and the SLSP model.
+
+Figure 12 presents the three most characteristic properties that we have used to quantify the dynamics of
+polymer materials: the end-to-end vector correlation P (t), the MSD, and the stress autocorrelation function
+
+18
+
+Figure 11: Stress-autocorrelation of the non-diagonal stress tensor elements G(t) obtained by the mCG model
+and the SLSP model for the optimal SLSP fugacity. A vertical shift (on the logarithmic scale) is performed
+to match the the shear modulus G0 of the mCG and SLSP models. For comparison, we also provide the total
+stress result with less statistics. We also include a stress autocorrelation calculated from the total stress, but
+post processed with the multiple-tau-correlator 52 as the mCG data is generated with this algorithm as well.
+
+(a) End-to-end vector correlation,
+c.f. Figure 8
+
+(b) Monomer g1 and center of mass
+g3 MSD, c.f. Figure 10.
+
+(c) Stress auto-correlation G(t), c.f.
+Figure 11.
+
+Figure 12: Transferability between the mCG and SLSP model. The matching parameters are obtained with
+400-mer cPB and transferred to simulations of a 200-mer melt without additional adjustments. This test
+demonstrates good agreement between the models with molecular weights other than the reference 400mer.
+It even shows that the time and length scales at which we can expect accurate predictions are independent of
+the molecular weight.
+
+19
+
+G(t) for the 200-mer systems. Note, that as mentioned above all model parameters have been obtained from
+the 400-mer melt. Thus, the calculation of the data for the 200-mer melt in Figure 12 serves as a direct
+check of the transferability of the SLSP model parametrization, with no additional adjustment. Overall, the
+agreement is very good, in particular for the P (t) and the MSD. For the stress autocorrelation function,
+G(t), the overlap of the two curves does not cover a large time interval. The simulations of the 400-mer
+melt indicate that the SLSP model only applies for t > 1µs, independent from the molecular weight. On
+this timescale, however, G(t) cannot be obtained with high accuracy in the simulation of the mCG model.
+Within rather large uncertainties, the data suggest that the time of the terminal decay is correctly predicted
+by the SLSP model.
+
+Taken together, the comparison of the mCG and SLSP models for melts of 200-mer and 400mer cPB
+shows the SLSP model can accurately predict a long and signiﬁcant portion of G(t) for higher molecular
+weights because the relevant timescale increases with molecular weight.
+
+5 Dynamics of PB melts
+
+In this section, the dynamical and rheological properties of cPB melts are discussed, using the simulation
+results from the atomistic, mCG, and SLSP models. Dynamical properties are presented for diﬀerent chain
+lengths from oligomers up to the molecular weights of industrial relevance (100 kDa), predicted by the
+diﬀerent models.
+
+5.1 Translational dynamics
+
+5.1.1 Self-diﬀusion coeﬃcient
+
+Figure 13: Molecular-weight dependence of the self-diﬀusion coeﬃcient for bulk melts of cPB at 413 K.
+Depending on molecular weight, the results of the atomistic, mCG, or SLSP models are reported (for M = 10.8
+and 21.6 kg mol−1 the results of both mCG and SLSP models are shown). The experimental self-diﬀusion
+coeﬃcients for samples of 1,4 rich PB with narrow molecular-weight distributions are also shown. 70
+
+The self-diﬀusion coeﬃcient, D, can be calculated from the linear part of the MSD of chain center-of-mass,
+g3(t), through the Einstein relation, D = lim
+. The molecular-weight dependence of D for cPB at 413 K
+t→∞
+is presented in Figure 13. Depending on the molecular weight, M , results from the atomistic, mCG, or SLSP
+models are presented. For the 200-mer and 400-mer chains (M = 10.8 and 21.6 kg mol−1), the results of both
+mCG and SLSP simulations are shown. The experimental values of D, 70 calculated through ﬁeld-cycling
+1H NMR relaxometry, for a series of nearly monodisperse 1,4 rich PB at 413 K are also shown in Figure 13.
+
+g3(t)
+6t
+
+20
+
+103104105M (g mol−1)10-410-310-210-1100101102D (10−7cm2 s−1)D∝M−1.7D∝M−2.5atomisticmCGSLSPexp. data (1,4 rich PB)Considering the presence of trans segments, which are slower than cis ones, 44 in the experimental samples, a
+fair agreement between simulation and experimental results is observed.
+
+Two diﬀerent scaling regimes are observed for D, corresponding to the unentangled and the entangled
+regimes. The gradual crossover between these two regimes takes place around chain lengths of 50 to 80
+monomeric repeating units (Mc ≈ 2.7 to 4.3 kg mol−1). The Rouse and the tube models predict D ∝ M −1
+and D ∝ M −2 scaling relations for unentangled and entangled chains, respectively. 51,67 Here the scaling
+exponents of the unentangled and entangled regimes are not exactly equal to the predictions of the Rouse
+and the tube models. These deviations are the results of the chain-end eﬀect (which lead to a change of
+density with chain length) 71,72 and contour length ﬂuctuations and constraint release for (mildly) entangled
+chains. 10,73 Similar deviations have been observed for other polymer melts as well. 10,36,37,73 The calculated
+scaling exponent in the entangled regime of cPB at 413 K (around 2.5) is in good agreement with the
+experimental scaling exponent for hydrogenated PB at 413 K (around 2.45). 74
+
+The key result from comparing the chain diﬀusion properties, derived from the three models is the seamless
+transition between the models as higher molecular weights are considered. Without the three coarse-graining
+steps, it is intractable to perform these simulations and predict the long-time diﬀusion characteristics. The fact
+that the SLSP model can seamlessly continue the scaling, highlights its ability to capture the entanglement
+eﬀects correctly. The SLSP model includes contour-length ﬂuctuation and constraint-release eﬀects and,
+indeed, shows very similar scaling as the experimental results. The matching between the models allows us to
+use the SLSP model not only for qualitative but also for quantitative predictions.
+
+5.1.2 Segmental mean-squared displacement
+
+Figure 14: Segmental mean-squared displacement, g1(t), normalized by
+t for cPB chains of diﬀerent lengths,
+obtained by simulations of: (a) the atomistic (dots), and mCG (lines) models and (b) the SLSP simulations.
+For a direct comparison between the MSD of the mCG and SLSP models see Figure 10b and Figure 12b.
+
+√
+
+The gradual crossover from unentangled to entangled polymer dynamics regime can also be observed
+through the calculation of the segmental MSD, g1(t), as a function of chain length. The Rouse model predicts
+the following scaling regimes for unentangled polymer chains (in the limit of very long chains): 75
+
+g1(t) ∝
+
+(cid:40)
+
+2
+
+t 1
+t1
+
+t < τR
+t > τR
+
+In the case of entangled chains, the tube model predicts: 51
+
+g1(t) ∝
+
+
+
+
+
+4
+
+2
+
+t 1
+t 1
+t 1
+t1
+
+2
+
+t < τe
+τe < t < τR
+τR < t < τd
+t > τd
+
+21
+
+(18)
+
+(19)
+
+10-610-510-410-310-210-1100101102t (µs)101102g1(t)/t0.5 (nm2µs−0.5)t−0.25t0.5(a)30-mer50-mer80-mer100-mer200-mer400-mer1000-mer100101102103t (µs)101102g1(t)/t0.5 (nm2µs−0.5)t−0.25t0.5(b)400-mer600-mer800-mer1000-mer2000-merwhere τe, τR, and τd are the entanglement time, the Rouse time and the reptation (disentanglement) time,
+respectively. The deviations from the Rouse behavior become more clear if g1(t) is normalized by t 1
+2 , which
+is the expected asymptotic Rouse slope. In this presentation, a negative slope at intermediate times is a sign
+of entanglements. 52 The plot of g1(t)
+for cPB chains of various molecular weights is presented in Figure 14.
+√
+t
+
+In panel (a) the results of atomistic, mCG,and SLSP models are displayed. g1(t)
+t
+
+of 50-mer and shorter
+chains do not have a negative slope. However, before the normal diﬀusion regime, g1(t) evolves faster than t 1
+2
+(asymptotic Rouse behaviour). The deviation is more pronounced for shorter chains. The Rouse model for
+short chains (i. e., a ﬁnite number of modes) predicts this observed behavior. In Figure 22 (subsection A.2),
+the g1(t) curves of unentangled atomistic and mCG chains are compared with the predictions of the Rouse
+model. For 10-mer cPB, the Rouse model describes the g1(t) of atomistic and mCG models; particularly, for
+mCG chains, the agreement is very good and the Rouse model nicely ﬁt the g1(t) curve for times larger than
+the short time ballistic regime. For 30-mer and 50-mer chains, a deviation between the simulation results and
+the Rouse model is observed. The ignorance of non-crossability of chains in the Roue model is the probable
+origin of this deviation (for a more detailed discussion see subsection A.2).
+
+√
+
+For 80-mer and longer chains, an interval of negative slope is observed in the plot of g1(t)
+t
+
+. The negative
+slope shows the eﬀect of entanglement constraints on the motion of monomers. With increasing chain length,
+the negative slope decreases and tends to the prediction of the tube model, i. e., −0.25. The deviations from
+the prediction of the tube model are due to the rather short lengths of the studied chains that belong to the
+region of the gradual crossover from the unentangled to the entangled regime. It is worth mentioning that
+the onset of the appearance of the negative slope in g1(t) coincides with the breaking point in the slope of
+D vs. N , both occur around 50 to 80 monomers. g1(t) of both atomistic and mCG models exhibit similar
+behavior (similar slopes) in the region of transition from the unentangled to the entangled regime (consider
+that scaling of mCG time does not aﬀect the scaling exponents of g1(t)). This similarity originates from the
+preservation of the chemical identity of the atomistic model in the mCG one.
+
+√
+
+√
+
+In Figure 14b results about g1(t)
+t
+
+from the SLSP simulations are presented. The SLSP model signiﬁcantly
+extends the range of molecular weights and times that can be investigated. Utilizing the SLSP model enables
+us to verify the prediction that higher molecular weights show a more pronounced 1/4 scaling of g1(t) at
+early-intermediate times. We can also observe the transition to the scaling behavior, g1(t) ∝ t1/2, at later
+intermediate times and molecular weights up to a 1000-mer. The last transition into free diﬀusion, g1(t) ∝ t,
+is still a computational challenge for high molecular weights. The present data only reach this regime for less
+than 600 monomeric repeating units per chain.
+
+5.2 Linear viscoelastic properties
+
+The typical measure for the study of the linear viscoelastic properties of polymers is the stress relaxation
+modulus, G(t). The G(t) curves, calculated from the mCG and SLSP models of cPB chains with various
+lengths are provided in Figure 15. Figure 15a and Figure 15b present the results of the mCG and SLSP
+model, respectively. Both the Rouse and the tube models predict a decay of G(t) with the slope of t−0.5 at
+short times (t < τR and t < τe for unentangled and entangled chains, respectively) and exponential decay of
+G(t) at long times (t > τR and t > τd for unentangled and entangled chains). 51,67 However, the tube model
+predicts a plateau for G(t) at intermediate times which is not predicted by the Rouse model. 51,67 It is clear
+from Figure 15a that all G(t) curves decay with the slope of t−0.5 at short times; at intermediate times, with
+increasing chain length, convergence to the expected behavior (plateau of G(t)) is observed.
+
+Due to the high degree of coarse-graining, the SLSP model cannot resolve the behavior at short time
+scales, t < 1 µs. Therefore we present in Figure 15b the stress relaxation modulus only for longer times; the
+short-time decay G(t) ∝ t−1/2 is omitted. The SLSP model, however, enables us to unlock the long timescales
+that are necessary to predict rheological properties of higher molecular weights. We can access chain lengths
+up to 2000-mer (M = 108 kg mol−1). Even for the highest molecular weight, the 2000-mer cPB, we do not
+observe a plateau in G(t), as it is expected in the limit of inﬁnite molecular weight according to the tube
+model. Instead, we observe a slight, but continuous decay of G(t) that highlights the liquid properties of the
+material on all timescales. This eﬀect can be partially rationalized by contour-length ﬂuctuations of the tube.
+
+22
+
+Figure 15: Chain-length dependence of shear-stress relaxation modulus, G(t), for cPB at 413 K from (a)
+mCG and (b) SLSP models. In panel (a), the experimental 69 plateau modulus of 1,4-PB at 413 K is shown
+by a dashed line. The G(t) curves of the SLSP model are calculated through chain averaging procedure;
+however, for 400-mer chains, G(t) from the calculation of the autocorrelation of total stress is also presented.
+The black solid lines are the results of ﬁtting Maxwell modes. To improve visibility, these lines are only
+shown at long times. The SLSP model is not able to resolve the short time characteristics, however, the
+behavior on longer timescales (> 1µs) has been veriﬁed in Figure 11.
+
+Figure 16: Calculated (througth mCG and SLSP models) G(cid:48)(ω) and G(cid:48)(cid:48)(ω) for 400-mer cPB (M = 21.6 kg
+mol−1) together with the experimental data 76 for a nearly monodisperse 1,4 rich PB (Mn = 21.7 kg mol−1).
+The experimental data have been horizontally and vertically shifted by the experimentally determined shift
+factors. 76,77
+
+The complex modulus of oscillatory shear, G∗(ω), can be calculated from G(t) through:
+
+G∗(ω) = G(cid:48)(ω) + iG(cid:48)(cid:48)(ω) = iω
+
+(cid:90) ∞
+
+0
+
+e−iωtG(t)dt
+
+(20)
+
+where ω is the angular frequency, and G(cid:48)(ω) and G(cid:48)(cid:48)(ω) denote the storage and loss moduli. The above
+Laplace transform can be calculated by ﬁtting G(t) to a series of Maxwell modes and analytic calculation of
+the integral:
+
+n
+(cid:88)
+
+G(t) =
+
+gie−t/λi
+
+i=0
+
+G(cid:48)(ω) =
+
+n
+(cid:88)
+
+i=0
+
+giω2λ2
+i
+1 + ω2λ2
+i
+
+, G(cid:48)(cid:48)(ω) =
+
+n
+(cid:88)
+
+i=0
+
+giωλi
+1 + ω2λ2
+i
+
+23
+
+(21)
+
+(22)
+
+10-510-410-310-210-1100101t (µs)100101102103G(t) (bar)t−0.5(a)30-mer50-mer80-mer100-mer200-mer400-mer1000-mer100101102103t (µs)10-1100101102G(t) (bar)(b)400-mer (chain)400-mer (total)600-mer800-mer1000-mer2000-mermCG-400-mer10310410510610710810910101011ω (rad/s)10-210-1100101102103G0,G00 (bar)cisPB-400mermCG, G0mCG, G00SLSPtotal, G0SLSPtotal, G00SLSPchain,G0SLSPchain,G00exp., G0exp., G00where gi and λi are the modulus and relaxation time of the ith Maxwell mode, respectively. Note that,
+we found agreement between the G(cid:48)(ω) and G(cid:48)(cid:48)(ω) calculated through ﬁtting Maxwell modes on the G(t)
+curves of mCG simulations with those obtained from the direct analytical transformation of G(t) using the
+i-Rheo GT tool. 78 In Figure 16, the calculated (through mCG and SLSP simulation) G(cid:48)(ω) and G(cid:48)(cid:48)(ω) curves
+for 400-mer cPB (M = 21.6 kg mol−1) are presented together with the experimental data 76 for a nearly
+monodisperse 1,4 rich PB with an almost similar molecular weight (Mn = 21.7 kg mol−1). The experimental
+spectra were reported at T = 298 K; thus, here they have been horizontally and vertically shifted by the
+experimentally determined 76,77 shift factors to generate the spectra at 413 K (aT = 31 and bT = 1.25 were
+used for horizontal and vertical shifts, respectively). Taking into account the diﬀerent microstructures of the
+simulated and experimental samples and also uncertainties of the shift factors, a good agreement between
+simulation and experiment is observed.
+
+Fitting the Maxwell modes to the SLSP model allows us to calculate the complex moduli for higher
+molecular weights. The range validity of the SLSP model limits the range of frequencies that we can examine
+to below 107rad/s. For higher frequencies, we can use the mCG model as described earlier. Figure 17 plots
+the obtained moduli for the 400-mer up to the 2000-mer cPB. Whereas the high-frequency behavior is not
+signiﬁcantly aﬀected by molecular weight, we observe that the low-frequency moduli strongly increase with
+chain length and that the curves extend to lower frequencies. This behavior is expected because cPB with
+higher molecular weight exhibits a more solid-like behavior at large, intermediate timescales, and the terminal
+relaxation time increases with Mw.
+
+While the exact shape of the dynamic moduli is inﬂuenced by the chain averaging (appendix A.1) and the
+quality of the Maxwell model ﬁt, we can still determine the longest relaxation time by the ﬁrst crossing point
+of G(cid:48) and G(cid:48)(cid:48) as in indicated in Figure 17. Even as the G(cid:48)(cid:48) does not feature a negative slope, the crossing is a
+signature of the entanglement dynamics. The Rouse model prediction from the moduli (inset of Figure 17)
+does not feature a crossing point of the moduli.
+
+Figure 17: Molecular-weight dependence of storage modulus, G(cid:48)(ω), and loss modulus, G(cid:48)(cid:48)(ω) calculated
+through the SLSP model for cPB at 413 K. For clarity we split the molecular weights to two panels. The
+longest relaxation time can be identiﬁed by the crossing point of G(cid:48) and G(cid:48)(cid:48) at each molecular weight. The
+validity range of the SLSP model, t > 1µs, limits our predictions to low frequencies. The quality of the
+Maxwell model ﬁtting aﬀects the quality of the predicted moduli. The inset display the Rouse characteristics
+for reference.
+
+5.2.1 Zero-shear viscosity
+
+The last part of our analysis concerns zero-shear viscosity, η0, which can be calculated from G(t) as:
+
+The molecular-weight dependence of η0, is presented in Figure 18. Depending on chain length, the results of
+atomistic, mCG, or SLSP simulations are reported; however, for 200-mer and 400-mer chains, the viscosities
+
+η0 =
+
+(cid:90) ∞
+
+0
+
+dt G(t)
+
+(23)
+
+24
+
+104103102101100101 [s1]100101G0, G00 [bar]2000mer: G02000mer: G001000mer: G01000mer: G00800mer: G0800mer: G00104103102101100101 [s1]100101G0, G00 [bar]800mer: G0800mer: G00600mer: G0600mer: G00400mer: G0400mer: G00101100101102103104TR105104103102101G0/G0 G00/G0Rouse G0Rouse G00Figure 18: Molecular-weight dependence of zero-shear viscosity for a bulk melt of cPB at 413 K. Depending
+of molecular weight, the results of the atomistic, mCG, and SLSP simulations are reported (for M = 10.8 and
+21.6 kg mol−1 the results of both mCG and SLSP models are shown). The experimental viscosities (adjusted
+to 413 K) for samples of nearly monodisperse 1,4 rich PB are also shown. 77
+
+from both mCG and SLSP models are presented, that exhibit very good agreement. The experimental 77
+values of η0 for nearly monodisperse 1,4-PB samples (less than 10% vinyl content, containing both cis
+and trans carbon double bonds) are also presented; the experimental values of η0 were measured at lower
+temperatures than 413 K and have been shifted to 413 K, using the reported shift factors. 77 Considering
+diﬀerent microstructure of the simulated and experimental PB chains, a fair agreement between simulation
+and experimental data is observed. Consistent with the data of diﬀusion coeﬃcients (see Figure 13), the
+viscosities of the simulated cPB samples are lower than those of the experimental 1,4-PB samples. The latter
+is understandable if we consider that the experimental data concern samples containing vinyl- and trans- PB
+components, both of which have a larger glass transition temperature than cPB.
+
+The Rouse and the tube model predict η0 ∝ M and η0 ∝ M 3 scaling relations for unentangled and
+entangled chains, respectively. 51,67 As can be seen from Figure 18 for both experimental and simulation data,
+deviations from the predictions of the Rouse and tube models are observed. Note that, at the entangled
+regime, the simulation results still do not show a constant scaling exponent, and the exponent increases with
+molecular weight. As mentioned for the data of D (Figure 13), the chain-end eﬀect in the unentangled regime
+and contour length ﬂuctuations and constraint release in the entangled regime are well-known mechanisms
+aﬀecting the scaling exponent. 77
+
+5.3 Computational eﬃciency
+
+In this section, we brieﬂy highlight why it is necessary to have the three tiers of modeling and the computational
+advantage of the hierarchical multi-scale methodology, by comparing the computational cost of the three used
+models. The parameter passing from the atomistic via the mCG to the SLSP model oﬀers the opportunity
+to compare the computational eﬃciencies of the three particle-based models.
+
+As a reference system, we chose 926 chains of a 400-mer cPB and calculate the estimated physical time
+it takes to propagate the system for 1µs at 413 K. Such a system involves 1 481 600 CHx groups in the
+united-atom model, 370 400 beads in the mCG representation and 29 632 particles in the SLSP scale. This
+system size can be straightforwardly simulated by the SLSP model. However, it is diﬃcult to simulate such
+system sizes with the mCG model and it is out of the scope of atomistic simulations. Therefore we have
+extrapolated the required times from systems of smaller size for these two models.
+
+The SLSP model is implemented for HOOMD-blue, which is optimized for the execution of Nvidia graphics
+processing units (GPUs). To simulate the described benchmark we require approximately 590 s of computing
+time on an Nvidia V100 GPU. The mCG and atomistic simulations are executed on CPUs. Running with
+500 particles per core, the mCG simulation of the above-mentioned system takes around 10 hours on 740
+cores (Intel Xeon Gold 6148 @ 2.4 GHz) and the atomistic simulation takes around 10 days on 2960 cores.
+
+25
+
+103104105M (g mol−1)10-410-310-210-1100101102103104η0 (Pa s)M1M3atomisticmCGSLSPexp. data (1,4-PB)model:
+simulation time
+particles
+execution time [s]
+CPUs [Intel Xeon Gold 6148]
+GPUs [Nvidia V100]
+cost of CPUs [≈ $US]
+cost of GPU [≈ $US]
+power consumption CPUs [TDP W ]
+power consumption GPU [max W ]
+
+atomistic
+mCG
+1µs
+1µs
+370 400
+1 481 600
+≈ 864 000 ≈ 36 000
+
+148
+-
+444 000
+-
+22 200
+-
+
+37
+-
+111 000
+-
+5 550
+-
+
+SLSP
+1µs
+29 632
+590
+-
+1
+-
+10 000
+-
+300
+
+Figure 19: Overview of the computational costs of the three diﬀerent models in comparison (at 413 K).
+
+26
+
+atomisticmCGSLSP103104105106degrees of freedomexecution time [s]monetary cost [$US]power consumption [W]Figure 19 summarizes important aspects of the three diﬀerent models. The united-atom simulations
+involve a factor of 4 more degrees of freedom than the mCG model but require a factor of ≈ 100 more
+computational resources. This additional speedup by a factor of ≈ 25 stems from its lower friction coeﬃcient
+(S ≈ 5) and the larger time step permissible (5 fs). Since the atomistic and mCG models use CPUs whereas
+the SLSP model employs GPUs a quantitative comparison is not straightforward. Nevertheless, we can
+appreciate from the data that the speedup by a factor of 61 × 37 in seconds (1 Xeon CPUs vs V100 GPU)
+from the mCG model to our SLSP model is more than the mere reduction of the number of degrees of
+freedom, a factor 12.5, and the GPU-acceleration of molecular dynamics codes, roughly a factor 6.5. 2 The
+additional speedup by a factor of ≈ 28 stems from the soft interactions. Note that, it is expected that the
+computational eﬃciencies of the coarser models are temperature-dependent and exponentially increase with
+decreasing temperature.
+
+An alternative to set the diﬀerent architectures in perspective consists of comparing the approximate
+acquisition costs or power consumption of the key components (only CPU or GPU but not the supporting
+infrastructure). For instance, the models behave like 65 000 : 677 : 1 in terms of acquisition costs.
+
+The comparison of the diﬀerent models emphasizes that atomistic models are required to account for
+the chemical speciﬁcity but also indicates that they cannot access the time and length scales relevant to
+the rheology of long macromolecules. Using a three-model parameter-passing strategy we can successfully
+bridge from the atomistic description to our SLSP model that can investigate the rheological properties of
+macromolecular materials. From Figure 13 and Figure 18 it is apparent that even a direct mapping from
+atomistic to the soft, CG (SLSP) model is not yet feasible with the available computational resources; the
+scales are too far apart. Thus, the mCG description is required for suﬃcient overlap. Figure 13 and Figure 18
+illustrates that the mCG model covers an intermediate regime of molecular weights between the atomistic
+and SLSP model.
+
+6 Summary
+
+We propose a systematic, mainly bottom-up, hierarchical coupling of simulation models from three diﬀerent
+scales to consistently model-speciﬁc polymer melts over broad spatiotemporal scales and predict their
+rheological behavior directly from the monomeric structure. As a reference system, we apply the methodology
+to cis-1,4-polybutadiene (cPB) melts. We start with a validated force ﬁeld for a united-atom model. With a
+standard structural-based method (here iterative Boltzmann inversion), we can transfer the static properties
+of the united cis-1,4-polybutadiene (cPB) to a moderately CG (mCG) model. To match mCG and atomistic
+dynamics, the mCG time is scaled by a proper time scaling factor, t∗
+mCG, which compensates for the lower
+monomeric friction coeﬃcient of the mCG model than that of the atomistic model. t∗
+mCG is chain length and
+temperature-dependent; its chain length dependence is in phase with the chain-length dependence of melt
+density and both, t∗
+mCG and density, tend to constant values for suﬃciently long chains.
+
+For the third (mesoscopic) layer of the polymer models, we use the slip-spring (SLSP) model. The
+transferred static properties from mCG model to SLSP model are at long length scales; so, in the SLSP
+model, the chain conﬁgurations can be considered as a Gaussian chain, simplifying the handover of static
+parameters from the moderately CG to the SLSP model. However, because the SLSP model serves at a
+high degree of coarse-graining, the nonbonded interactions are soft and do not prevent backbone crossing.
+Therefore, without additional SLSPs, the model would not be able to capture the correct entangled dynamics.
+Hence, we have two kinetic parameters to pass from the moderately CG model to the SLSP model.
+i) a
+timescale mapping, and ii) the number of entanglements, which are represented via SLSPs in the latter model.
+We ﬁnd that the end-to-end vector correlation, P (t), allows a good mapping of both parameters. We could
+verify the mapping with a comparison of the single-chain MSD and the collective stress-relaxation modulus,
+G(t). The mappings are transferable to higher molecular weights, which enables us to not only access longer
+time and length scales with the coarse-grained models, it also allows us to explore industrially relevant high
+molecular weights. A summary of the parameterization steps for the mCG and SLSP models are provided in
+Figure 20.
+
+Finally, we verify our simulation results by measuring rheological properties such as diﬀusion and viscosity
+
+2From https://developer.nvidia.com/hpc-application-performance we estimate that 13 Dual Xeon Gold 6240@2.60GHz
+
+correspond to 4 V100-GPUs for GROMACS or LAMMPS.
+
+27
+
+Figure 20: Summary of the parameterization steps for the mCG and SLSP models. The mCG potentials
+are derived by matching bulk density and local structural distribution of the mCG chains to those of the
+atomistic chains. To match mCG and atomistic dynamics, the mCG time is scaled by a proper time scaling
+factor, t∗
+mCG, which is calculated by comparing MSD and P (t) (orientational autocorrelation function of the
+end-to-end vector) of the two models. With increasing chain length, t∗
+mCG tends to a constant value. At
+the SLSP level, the calibration of the length unit and the determination of the shape of the bond length
+distribution are performed based on the end-to-end distance and bond length distribution of the mCG chain.
+The number of slip-springs and the time unit is set based on the end-to-end vector correlation, P (t), of the
+more detailed model. Finally, stress relaxation modulus at t = 0, G0, is determined based on the short time
+behavior of G(t) of the lower-level model.
+
+as a function of molecular weight. We could verify our results against selected experimental results as well as
+the predicted power-law scalings of these properties.
+
+Overall, we construct three levels of modeling cis-1,4-polybutadiene (cPB). By matching static and kinetic
+parameters between the models we can make quantitative predictions from the level of individual atoms (1
+˚A) up to high molecular weight macromolecules (100 nm), and explore timescale from picoseconds up to
+several hundred microseconds.
+
+7 Acknowledgments
+
+The work was supported by computational time granted from the Greek Research & Technology Network
+(GRNET) in the National HPC facility ARIS under a project named POL-COMP-TIRE. V.H. acknowledges
+support by project “SimEA”, funded by the European Union’s Horizon 2020 research and innovation
+programme under Grant Agreement No. 810660. This work is supported by the Goodyear Tire and Rubber
+Company.
+
+A Appendix
+
+A.1 Stress autocorrelation in SLSP model
+
+An accurate calculation of G(t) is challenging because of the high noise in the virial tensor. For the SLSP
+model, we attack this problem by calculating the stress for the polymer chains individually and average the
+results of these single-chain stresses.
+
+All forces in the model are pairwise forces, hence the virial is calculated overall interacting particle pairs.
+This includes all bonded and nonbonded interactions. For each pair, the stress is equally distributed to both
+participating particles. Summing up all contributions in a molecule results in the individual chain stresses.
+This allows for better statistics because the result of each chain can be averaged. We note that the summation
+of all chain stresses results in the same as the total stress, however, the autocorrelation is not the same, as
+
+28
+
+Radial pairdistributionfunction (RDF) atthe mCG levelBond length, angle, and dihedraldistributions at the mCG levelDensitymCG potentialsMSD, P(t) (mean-squared displacement,  end-to-end vector autocorrelation)Time scaling factorBond lengthdistribution at theSLSP levelEnd-to-enddistanceSLSP length unit, SLSP bond potentialP(t) (end-to-end vectorautocorrelation)SLSP time unit, number of slip-springsG(t)(stress relaxationmodulus)G0AtomisticmCGSLSP(a) G(t) calculated per chain and in the total system.
+
+(b) Dynamic moduli of both G(t) option in comparison.
+
+Figure 21: Comparison of the G(t) calculated as chain average versus the calculation via the total stress with
+a 800mer chain. The chain average oﬀers the better statistics, but has a slightly softer decay. The important
+longest relaxation time is captured correctly with both models.
+
+interchain correlations are sacriﬁced for noise reduction.
+
+The standard method, employed for the atomistic and mCG model simulations, is the calculation of the
+
+total stress in the system and its autocorrelation.
+
+Figure 21 compares the two methods. The chain-averaging strategy oﬀers signiﬁcantly better statistics,
+which results in better ﬁts for the Maxwell model. The decay of G(t), however, is softer than that obtained
+by the total stress correlation. There is no pronounced plateau of G(t), obtained via the chain-averaging
+method. As a consequence, the loss modulus for the considered chain lengths does not feature the negative
+slope after the ﬁrst maximum. Both, a plateau of G(t) and a negative slope of G(cid:48)(cid:48)(ω), are considered key
+signatures of reptation dynamics of entangled chains. We note that this observation is not a shortcoming
+of the underlying SLSP model but rather of the measurement of the stress autocorrelation G(t). The total
+stress autocorrelation captures these eﬀects in our simulations.
+
+For this manuscript, we opt for the higher precision of the chain-averaging method. We focus on the
+important longest relaxation time, which is captured in both scenarios but is more easily identiﬁed with
+better statistics. The longest relaxation time of an entangled polymer melt can be identiﬁed as the lowest
+frequency where the dynamic moduli G(cid:48) and G(cid:48)(cid:48) cross each other as marked in Figure 21b.
+
+A.2 Segmental mean-squared displacement of unentangled chains
+
+In this section, we compare the segmental mean-squared displacements, g1(t), of unentangled cPB chains
+with the predictions of the Rouse model for the g1(t) of short chains (i. e., few Rouse modes): 75
+
+g1(t)
+R2
+ee
+
+=
+
+2
+π2
+
+(cid:34)
+
+t
+τR
+
++
+
+NR−1
+(cid:88)
+
+p=1
+
+(cid:16)
+
+1
+p2
+
+1 − e−p2t/τR
+
+(cid:35)
+
+(cid:17)
+
+(24)
+
+here NR is number of Rouse segments of the chain, τR is the Rouse time, and R2
+ee is the end-to-end distance.
+Equation 24 predicts three scaling regimes for g1(t): at short times, g1(t) ∝ t; at intermediate times g1(t) ∝ tx,
+where 0.5 ≤ x ≤ 1 depending on NR (for large values of NR, x = 0.5); ﬁnally, at long times g1(t) ∝ t (normal
+diﬀusion regime). For using Equation 24, we calculate τR from diﬀusion coeﬃcient, D, through: 75
+
+τR =
+
+R2
+ee
+3π2D
+
+(25)
+
+The only free parameter for ﬁtting is NR, the number of Rouse segments. To determine NR we ﬁtted
+Equation 24 to the g1(t) of 10-mer chains and determined NR for them; for other chain lengths, the NR
+values were calculated from the NR of 10-mer chains (NR is proportional to chain length).
+
+29
+
+103102101100101102103t [s]103102101100101102G(t) [bar]chain dataMW chain fittotal dataMW total fit103102101100101 [s1]100101G0, G00 [bar]chain G0chain G00total G0total G00Figure 22: Mean-squared displacement of monomers, g1(t), normalized by t0.5 for (a) 10-mer, (b) 30-mer,
+and (c) 50-mer cPB chains from atomistic and mCG simulations. The predicted g1(t) curves of the Rouse
+model for chains containing ﬁnite number of segments, NR, are included; in all cases, one Rouse segment
+corresponds to around 2.5 monomeric repeating units (≈ one Kuhn segment).
+
+Figure 22a shows the g1(t) of 10-mer atomistic and mCG chains together with the prediction of the Rouse
+model with NR = 4. This NR value is in agreement with the number of Kuhn segments per a 10-mer chain.
+One Kuhn segment of the model cPB chains contains around 9 backbone bonds; 44 therefore, a 10-mer cPB
+chain (containing 39 backbone bonds) contains around 4 Kuhn segments. After the very short time ballistic
+regime (in which g1(t) ∝ t2), g1(t) of 10-mer mCG chains exhibit a perfect match with the result of the
+Rouse model. After the ballistic regime, g1(t) of mCG model shows a distinct g1(t) ∝ t1 regime, which is
+in agreement with the Rouse model; such a short time linear regime is not clearly seen in the g1(t) of the
+
+30
+
+10-410-310-210-1100101102t (ns)10-1100101g1(t)/R2ee/t0.5 (ns−0.5)(a)g1(t)∝t0.7g1(t)∝t1g1(t)∝t2cPB 10-meratomisticmCGRouse model, NR=410-310-210-1100101102t (ns)10-210-1100g1(t)/R2ee/t0.5 (ns−0.5)(b)g1(t)∝t0.6cPB 30-meratomisticmCGRouse model, NR=1210-310-210-1100101102103t (ns)10-210-1100g1(t)/R2ee/t0.5 (ns−0.5)(c)g1(t)∝t0.54cPB 50-meratomisticmCGRouse model, NR=20atomistic chains. However, the Rouse model well describes the subdiﬀusive regime of the g1(t) of 10-mer
+atomistic chain.
+
+Figure 22b-c shows the g1(t) of 30-mer and 50-mer atomistic and mCG chains together with the predictions
+of the Rouse model with NR = 12 and 20, respectively. Here, as in the case of 10-mer chains, one Rouse
+segment corresponds to approximately one Kuhn segment. For 30-mer and 50-mer chains the agreement
+between the simulation results and the Rouse model is not as good as for 10-mer cPB. Particularly, for
+these cases, the Rouse model overestimates the slope of g1(t) at the intermediate subdiﬀusive regime (the
+eﬀect is more pronounced for 50-mer cPB). The probable origin of this behavior is the ignorance of the
+non-crossability of chains in the Rouse model. The eﬀect of non-crossability is higher for longer chains and
+ﬁnally leads to the appearance of entangled dynamics (as discussed in the main manuscript, for cPB, the
+signs of the entangled dynamics emerge around chain lengths of 50–80 monomers).
+
+References
+
+[1] Tsch¨op, W.; Kremer, K.; Batoulis, J.; B¨urger, T.; Hahn, O. Simulation of polymer melts. I. Coarse-
+
+graining procedure for polycarbonates. Acta Polym. 1998, 49, 61–74.
+
+[2] Theodorou, D. N. Hierarchical modelling of polymeric materials. Chem. Een. Sci. 2007, 62, 5697–5714.
+
+[3] Padding, J.; Briels, W. J. Systematic coarse-graining of the dynamics of entangled polymer melts: the
+
+road from chemistry to rheology. J. Phys. Condens. Matter 2011, 23, 233101.
+
+[4] Harmandaris, V.; Adhikari, N.; van der Vegt, N. F.; Kremer, K. Hierarchical modeling of polystyrene:
+
+From atomistic to coarse-grained simulations. Macromolecules 2006, 39, 6708–6719.
+
+[5] Sukumaran, S. K.; Likhtman, A. E. Modeling entangled dynamics: comparison between stochastic
+
+single-chain and multichain models. Macromolecules 2009, 42, 4300–4309.
+
+[6] M¨uller, M. Studying Amphiphilic Self-assembly with Soft Coarse-Grained Models. J. Stat. Phys. 2011,
+
+145, 967–1016.
+
+[7] Kremer, K.; Grest, G. S. Dynamics of entangled linear polymer melts: A molecular-dynamics simulation.
+
+J. Chem. Phys. 1990, 92, 5057–5086.
+
+[8] Tsch¨op, W.; Kremer, K.; Hahn, O.; Batoulis, J.; B¨urger, T. Simulation of polymer melts. II. From
+
+coarse-grained models back to atomistic description. Acta Polym. 1998, 49, 75–79.
+
+[9] Reith, D.; P¨utz, M.; M¨uller-Plathe, F. Deriving eﬀective mesoscale potentials from atomistic simulations.
+
+J. Comput. Chem. 2003, 24, 1624–1636.
+
+[10] Harmandaris, V.; Kremer, K. Dynamics of polystyrene melts through hierarchical multiscale simulations.
+
+Macromolecules 2009, 42, 791–802.
+
+[11] Fritz, D.; Harmandaris, V. A.; Kremer, K.; van der Vegt, N. F. Coarse-grained polymer melts based on
+isolated atomistic chains: Simulation of polystyrene of diﬀerent tacticities. Macromolecules 2009, 42,
+7579–7588.
+
+[12] Ohkuma, T.; Kremer, K. Comparison of two coarse-grained models of cis-polyisoprene with and without
+
+pressure correction. Polymer 2017, 130, 88–101.
+
+[13] Kempfer, K.; Dev´emy, J.; Dequidt, A.; Couty, M.; Malfreyt, P. Realistic coarse-grain model of cis-1,
+
+4-polybutadiene: from chemistry to rheology. Macromolecules 2019, 52, 2736–2747.
+
+[14] Shahidi, N.; Chazirakis, A.; Harmandaris, V.; Doxastakis, M. Coarse-graining of polyisoprene melts
+
+using inverse Monte Carlo and local density potentials. J. Chem. Phys. 2020, 152, 124902.
+
+[15] Eslami, H.; Karimi-Varzaneh, H. A.; M¨uller-Plathe, F. Coarse-grained computer simulation of nanocon-
+
+ﬁned polyamide-6, 6. Macromolecules 2011, 44, 3117–3128.
+
+31
+
+[16] Johnston, K.; Harmandaris, V. Hierarchical multiscale modeling of polymer–solid interfaces: Atomistic
+to coarse-grained description and structural and conformational properties of polystyrene–gold systems.
+Macromolecules 2013, 46, 5741–5750.
+
+[17] Pandey, Y. N.; Brayton, A.; Burkhart, C.; Papakonstantopoulos, G. J.; Doxastakis, M. Multiscale
+
+modeling of polyisoprene on graphite. J. Chem. Phys. 2014, 140, 054908.
+
+[18] Chappa, V.; Morse, D. C.; Zippelius, A.; M¨uller, M. Translationally Invariant Slip-Spring Model for
+
+Entangled Polymer Dynamics. Phys. Rev. Lett. 2012, 109, 148302.
+
+[19] Padding, J.; Briels, W. J. Uncrossability constraints in mesoscopic polymer melt simulations: non-Rouse
+
+behavior of C 120 H 242. The Journal of Chemical Physics 2001, 115, 2846–2859.
+
+[20] Hua, C. C.; Schieber, J. D. Segment connectivity, chain-length breathing, segmental stretch, and
+constraint release in reptation models. I. Theory and single-step strain predictions. J. Chem. Phys. 1998,
+109, 10018–10027.
+
+[21] Hua, C. C.; Schieber, J. D.; Venerus, D. C. Segment connectivity, chain-length breathing, segmental
+stretch, and constraint release in reptation models. II. Double-step strain predictions. J. Chem. Phys.
+1998, 109, 10028–10032.
+
+[22] Hua, C. C.; Schieber, J. D.; Venerus, D. C. Segment connectivity, chain-length breathing, segmental
+stretch, and constraint release in reptation models. III. Shear ﬂows. J. Rheol. 1999, 43, 701–717.
+
+[23] Masubuchi, Y.; Takimoto, J.-I.; Koyama, K.; Ianniruberto, G.; Marrucci, G.; Greco, F. Brownian
+simulations of a network of reptating primitive chains. The Journal of Chemical Physics 2001, 115,
+4387–4394.
+
+[24] Likhtman, A. E. Single-chain slip-link model of entangled polymers: Simultaneous description of neutron
+
+spin- echo, rheology, and diﬀusion. Macromolecules 2005, 38, 6128–6139.
+
+[25] M¨uller, M.; Daoulas, K. Ch. Single-chain dynamics in a homogeneous melt and a lamellar microphase: A
+comparison between Smart Monte Carlo dynamics, slithering-snake dynamics, and slip-link dynamics. J.
+Chem. Phys. 2008, 129, 164906.
+
+[26] Del Biondo, D.; Masnada, E. M.; Merabia, S.; Couty, M.; Barrat, J.-L. Numerical study of a slip-link
+
+model for polymer melts and nanocomposites. J. Chem. Phys. 2013, 138, 194902.
+
+[27] Schieber, J. D.; Andreev, M. Entangled polymer dynamics in equilibrium and ﬂow modeled through slip
+
+links. Annual review of chemical and biomolecular engineering 2014, 5, 367–381.
+
+[28] Uneyama, T.; Masubuchi, Y. Multi-chain slip-spring model for entangled polymer dynamics. The Journal
+
+of chemical physics 2012, 137, 154902.
+
+[29] Ramirez-Hernandez, A.; Peters, B. L.; Schneider, L.; Andreev, M.; Schieber, J. D.; M¨uller, M.; Kr¨oger, M.;
+de Pablo, J. J. A detailed examination of the topological constraints of lamellae-forming block copolymers.
+Macromolecules 2018, 51, 2110–2124.
+
+[30] Ramirez-Hernandez, A.; Peters, B. L.; Schneider, L.; Andreev, M.; Schieber, J. D.; M¨uller, M.;
+de Pablo, J. J. A multi-chain polymer slip-spring model with ﬂuctuating number of entanglements:
+Density ﬂuctuations, conﬁnement, and phase separation. The Journal of Chemical Physics 2017, 146,
+014903.
+
+[31] Masubuchi, Y. Simulating the Flow of Entangled Polymers. Annual Review of Chemical and Biomolecular
+
+Engineering 2014, 5, 11–33, PMID: 24498953.
+
+[32] Masubuchi, Y.; Uneyama, T. Comparison among multi-chain models for entangled polymer dynamics.
+
+Soft Matter 2018, 14, 5986–5994.
+
+32
+
+[33] Masubuchi, Y. Multichain slip-spring simulations for branch polymers. Macromolecules 2018, 51,
+
+10184–10193.
+
+[34] Langeloth, M.; Masubuchi, Y.; B¨ohm, M. C.; M¨uller-Plathe, F. Recovering the reptation dynamics of
+polymer melts in dissipative particle dynamics simulations via slip-springs. The Journal of chemical
+physics 2013, 138, 104907.
+
+[35] Masubuchi, Y.; Langeloth, M.; B¨ohm, M. C.; Inoue, F., Tadashi M¨uller-Plathe A multichain slip-spring
+dissipative particle dynamics simulation method for entangled polymer solutions. Macromolecules 2016,
+49, 9186–9191.
+
+[36] Vogiatzis, G. G.; Megariotis, G.; Theodorou, D. N. Equation of state based slip spring model for entangled
+
+polymer dynamics. Macromolecules 2017, 50, 3004–3029.
+
+[37] Sgouros, A.; Megariotis, G.; Theodorou, D. Slip-spring model for the linear and nonlinear viscoelastic
+properties of molten polyethylene derived from atomistic simulations. Macromolecules 2017, 50, 4524–
+4541.
+
+[38] Megariotis, G.; Vogiatzis, G. G.; Sgouros, A. P.; Theodorou, D. N. Slip spring-based mesoscopic
+simulations of polymer networks: Methodology and the corresponding computational code. Polymers
+2018, 10, 1156.
+
+[39] Sgouros, A.; Vogiatzis, G.; Megariotis, G.; Tzoumanekas, C.; Theodorou, D. Multiscale simulations of
+graphite-capped polyethylene melts: brownian dynamics/kinetic Monte Carlo compared to atomistic
+calculations and experiment. Macromolecules 2019, 52, 7503–7523.
+
+[40] Becerra, D.; C´ordoba, A.; Katzarova, M.; Andreev, M.; Venerus, D. C.; Schieber, J. D. Polymer rheology
+
+predictions from ﬁrst principles using the slip-link model. J. Rheol. 2020, 64, 1035–1043.
+
+[41] Wu, Z.; Kalogirou, A.; De Nicola, A.; Milano, G.; M¨uller-Plathe, F. Atomistic hybrid particle-ﬁeld
+molecular dynamics combined with slip-springs: Restoring entangled dynamics to simulations of polymer
+melts. J. Comp. Chem. 2021, 42, 6–18.
+
+[42] Smith, G. D.; Paul, W. United atom force ﬁeld for molecular dynamics simulations of 1, 4-polybutadiene
+based on quantum chemistry calculations on model molecules. J. Phys. Chem. A 1998, 102, 1200–1208.
+
+[43] Smith, G.; Paul, W.; Monkenbusch, M.; Willner, L.; Richter, D.; Qiu, X.; Ediger, M. Molecular dynamics
+of a 1, 4-polybutadiene melt. Comparison of experiment and simulation. Macromolecules 1999, 32,
+8857–8865.
+
+[44] Behbahani, A. F.; Rissanou, A.; Kritikos, G.; Doxastakis, M.; Burkhart, C.; Poli´nska, P.; Harman-
+daris, V. A. Conformations and Dynamics of Polymer Chains in Cis and Trans Polybutadiene/Silica
+Nanocomposites through Atomistic Simulations: From the Unentangled to the Entangled Regime.
+Macromolecules 2020, 53, 6173–6189.
+
+[45] Nos´e, S. A molecular dynamics method for simulations in the canonical ensemble. Mol. Phys. 1984, 52,
+
+255–268.
+
+[46] Hoover, W. G. Canonical dynamics: equilibrium phase-space distributions. Phys. Rev. A 1985, 31, 1695.
+
+[47] Parrinello, M.; Rahman, A. Polymorphic transitions in single crystals: A new molecular dynamics
+
+method. J. Appl. Phys. 1981, 52, 7182–7190.
+
+[48] Pronk, S.; P´all, S.; Schulz, R.; Larsson, P.; Bjelkmar, P.; Apostolov, R.; Shirts, M. R.; Smith, J. C.;
+Kasson, P. M.; van der Spoel, D.; Hess, B.; Lindahl, E. GROMACS 4.5: a high-throughput and highly
+parallel open source molecular simulation toolkit. Bioinformatics 2013, 29, 845–854.
+
+[49] Wang, H.; Junghans, C.; Kremer, K. Comparative atomistic and coarse-grained study of water: What
+
+do we lose by coarse-graining? Eur Phys J E 2009, 28, 221–229.
+
+33
+
+[50] Bussi, G.; Donadio, D.; Parrinello, M. Canonical sampling through velocity rescaling. The Journal of
+
+chemical physics 2007, 126, 014101.
+
+[51] Doi, M.; Edwards, S. The Theory of Polymer Dynamics; 1988.
+
+[52] Likhtman, A. E.; Sukumaran, S. K.; Ramirez, J. Linear viscoelasticity from molecular dynamics simulation
+
+of entangled polymers. Macromolecules 2007, 40, 6748–6757.
+
+[53] Ramirez, J.; Sukumaran, S. K.; Vorselaars, B.; Likhtman, A. E. Eﬃcient on the ﬂy calculation of time
+
+correlation functions in computer simulations. J. Chem. Phys. 2010, 133, 154103.
+
+[54] Ferry, J. D. Viscoelastic properties of polymers; John Wiley & Sons, 1980.
+
+[55] Harmandaris, V.; Doxastakis, M.; Mavrantzas, V.; Theodorou, D. Detailed molecular dynamics simulation
+of the self-diﬀusion of n-alkane and cis-1, 4 polyisoprene oligomer melts. The Journal of chemical physics
+2002, 116, 436–446.
+
+[56] Harmandaris, V.; Kremer, K. Predicting polymer dynamics at multiple length and time scales. Soft
+
+Matter 2009, 5, 3920–3926.
+
+[57] Wittmer, J. P.; Meyer, H.; Baschnagel, J.; Johner, A.; Obukhov, S.; Mattioni, L.; M¨uller, M.; Se-
+menov, A. N. Long Range Bond-Bond Correlations in Dense Polymer Solutions. Phys. Rev. Lett. 2004,
+93, 147801.
+
+[58] Klapp, S. H. L.; Diestler, D. J.; Schoen, M. Why are eﬀective potentials ‘soft’? J. Phys.: Condens.
+
+Matter 2004, 16, 7331–7352.
+
+[59] Anderson, J. A.; Lorenz, C. D.; Travesset, A. General Purpose Molecular Dynamics Simulations Fully
+Implemented on Graphics Processing Units. Journal of Computational Physics 2008, 227, 5342 – 5359.
+
+[60] Phillips, C. L.; Anderson, J. A.; Glotzer, S. C. Pseudo-Random Number Generation for Brownian
+Dynamics and Dissipative Particle Dynamics Simulations on GPU Devices. Journal of Computational
+Physics 2011, 230, 7191–7201.
+
+[61] Glaser, J.; Nguyen, T. D.; Anderson, J. A.; Lui, P.; Spiga, F.; Millan, J. A.; Morse, D. C.; Glotzer, S. C.
+Strong scaling of general-purpose molecular dynamics simulations on GPUs. Computer Physics Commu-
+nications 2015, 192, 97–107.
+
+[62] Warren, P.; Espanol, P. Statistical-mechanics of dissipative particle dynamics. EPL (Europhys. Lett.)
+
+1995, 30, 191196.
+
+[63] Heck, M.; Schneider, L.; M¨uller, M.; Wilhelm, M. Diblock Copolymers with Similar Glass Transition Tem-
+peratures in Both Blocks for Comparing Shear Orientation Processes with DPD Computer Simulations.
+Macromolecular Chemistry and Physics 2018, 219, 1700559.
+
+[64] Allen, M. P.; Tildesley, D. J. Computer Simulation of Liquids (Oxford Science Publications); Clarendon
+
+Press: Oxford, England, UK, 1989.
+
+[65] Matsen, M. W. The standard Gaussian model for block copolymer melts. J. Phys: Condens. Matter
+
+2001, 14, R21.
+
+[66] Kuhn, W.; Gr¨un, F. Beziehungen zwischen elastischen Konstanten und Dehnungsdoppelbrechung
+
+hochelastischer Stoﬀe. Colloid & Polymer Science 1942, 101, 248–271.
+
+[67] Rubinstein, M.; Colby, R. H. Polymer physics; Oxford university press New York, 2003; Vol. 23.
+
+[68] Rouse, P. E. A Theory of the Linear Viscoelastic Properties of Dilute Solutions of Coiling Polymers. The
+
+Journal of Chemical Physics 1953, 21, 1272–1280.
+
+[69] Fetters, L.; Lohse, D.; Richter, D.; Witten, T.; Zirkel, A. Connection between polymer molecular weight,
+density, chain dimensions, and melt viscoelastic properties. Macromolecules 1994, 27, 4639–4647.
+
+34
+
+[70] Meier, R.; Herrmann, A.; Kresse, B.; Privalov, A.; Kruk, D.; Fujara, F.; R¨ossler, E. Long-Time Diﬀusion
+
+in Polymer Melts Revealed by 1H NMR Relaxometry. ACS Macro Letters 2013, 2, 96–99.
+
+[71] Harmandaris, V.; Mavrantzas, V.; Theodorou, D. Atomistic molecular dynamics simulations of polydis-
+
+perse linear polyethylene melts. Macromolecules 1998, 31, 7934–7943.
+
+[72] Harmandaris, V.; Mavrantzas, V.; Theodorou, D.; Kr¨oger, M.; Ram´ırez, J.; ¨Ottinger, H.; Vlassopoulos, D.
+Dynamic crossover from Rouse to entangled polymer melt regime: Signals from long, detailed atomistic
+molecular dynamics simulations, supported by rheological experiments. Macromolecules 2003, 36,
+1376–1387.
+
+[73] Lodge, T. P. Reconciliation of the molecular weight dependence of diﬀusion and viscosity in entangled
+
+polymers. Phys. Rev. Lett. 1999, 83, 3218.
+
+[74] Tao, H.; Lodge, T. P.; Von Meerwall, E. D. Diﬀusivity and viscosity of concentrated hydrogenated
+
+polybutadiene solutions. Macromolecules 2000, 33, 1747–1758.
+
+[75] Doi, M. Introduction to polymer physics; Oxford university press, 1996.
+
+[76] Liu, C.-Y.; Halasa, A. F.; Keunings, R.; Bailly, C. Probe rheology: A simple method to test tube motion.
+
+Macromolecules 2006, 39, 7415–7424.
+
+[77] Colby, R. H.; Fetters, L. J.; Graessley, W. W. The melt viscosity-molecular weight relationship for linear
+
+polymers. Macromolecules 1987, 20, 2226–2237.
+
+[78] Tassieri, M.; Ram´ırez, J.; Karayiannis, N. C.; Sukumaran, S. K.; Masubuchi, Y. i-Rheo GT: Transforming
+
+from time to frequency domain without artifacts. Macromolecules 2018, 51, 5055–5068.
+
+35
+
+

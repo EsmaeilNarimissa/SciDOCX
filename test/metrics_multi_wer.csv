@@ -1,0 +1,11 @@
+pdf,domain,baseline,WER
+Biology (2023).pdf,Biology,tesseract,7.8998899889989
+Biology (2023).pdf,Biology,pdfminer,0.22149153490975235
+Chemistry (2024).pdf,Chemistry,tesseract,17.117521367521366
+Chemistry (2024).pdf,Chemistry,pdfminer,0.19313304721030042
+Physics (2025).pdf,Physics,tesseract,3.2620790629575405
+Physics (2025).pdf,Physics,pdfminer,0.38856589147286824
+Polymer Physics (2021).pdf,Polymer Physics,tesseract,14.249174917491748
+Polymer Physics (2021).pdf,Polymer Physics,pdfminer,0.2965716646014044
+Computer Science (2025 DeepSeek-OCR).pdf,Computer Science,tesseract,15.087576374745417
+Computer Science (2025 DeepSeek-OCR).pdf,Computer Science,pdfminer,0.44652019471122223

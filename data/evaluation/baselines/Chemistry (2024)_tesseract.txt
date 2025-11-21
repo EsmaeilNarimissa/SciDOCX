@@ -1,0 +1,72 @@
+arXiv:2404.01462vl1 [cs.LG] 1 Apr 2024
+
+OpenChemlE: An Information Extraction Toolkit
+
+For Chemistry Literature
+
+Vincent Fan,*t8 Yujie Qian,*t8 Alex Wang, Amber Wang,’ Connor W.
+
+Coley, and Regina Barzilay*"4
+
+{Computer Science and Artificial Intelligence Laboratory, Massachusetts Institute of
+Technology, Cambridge, MA, 02139
+{Department of Chemical Engineering, Massachusetts Institute of Technology, Cambridge,
+MA, 02139
+q Department of Electrical Engineering and Computer Science, Massachusetts Institute of
+Technology, Cambridge, MA, 02139
+
+§ Equal Contribution
+E-mail: yujieq@csail.mit.edu; regina@csail.mit.edu
+
+Abstract
+
+Information extraction from chemistry literature is vital for constructing up-to-date
+
+reaction databases for data-driven chemistry. Complete extraction requires combining
+
+b.
+
+nformation across text, tables, and figures, whereas prior work has mainly investigated
+extracting reactions from single modalities. In this paper, we present OpenChemlE to
+address this complex challenge and enable the extraction of reaction data at the doc-
+
+ument level. OpenChemlE approaches the problem in two steps: extracting relevant
+
+b.
+
+nformation from individual modalities and then integrating the results to obtain a
+
+final list of reactions. For the first step, we employ specialized neural models that each
+
+address a specific task for chemistry information extraction, such as parsing molecules
+or reactions from text or figures. We then integrate the information from these mod-
+ules using chemistry-informed algorithms, allowing for the extraction of fine-grained
+reaction data from reaction condition and substrate scope investigations. Our machine
+learning models attain state-of-the-art performance when evaluated individually, and
+we meticulously annotate a challenging dataset of reaction schemes with R-groups to
+evaluate our pipeline as a whole, achieving an F1 score of 69.5%. Additionally, the
+reaction extraction results of OpenChemlE attain an accuracy score of 64.3% when
+directly compared against the Reaxys chemical database. We provide OpenChemlE
+
+freely to the public as an open-source package, as well as through a web interface.
+
+Introduction
+
+Reaction data curated from scientific literature is commonly used to train models for chem-
+informatics. Today, this data is collected and maintained by experts in databases such as
+Reaxys./ However, this manual extraction comes with prohibitive cost and delayed updates.
+Moreover, increasingly nuanced machine learning models for reaction development require
+more fine-grained and comprehensive data, pertaining to reaction conditions, substrate scope,
+and other screening processes in synthetic chemistry 2 Existing automated techniques can
+only partially address this task, focusing on specific subproblems, such as reaction parsing
+from individual diagrams or text passages In this paper, we present OpenChemlE, a
+system that extracts reaction data from chemical literature at the document level.
+
+This extraction task is difficult because large swathes of reaction data are realized in
+multiple modalities, often requiring chemical reasoning to fully determine relevant molecular
+structures. Figure{l]illustrates two challenges. First, the molecular structures are not entirely
+depicted in the figure, as they contain R-groups. The abbreviated structures can be identified
+by directly parsing phenol for R? in entry 1 of the accompanying table, or by comparing the
+differences in the molecular graphs of 1 and 1u in entry 21. Second, the system must
+
+align additional reaction metadata with the correct structures. In Figure [1] the highlighted

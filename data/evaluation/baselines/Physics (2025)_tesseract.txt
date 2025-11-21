@@ -1,0 +1,225 @@
+2502.10240v1 [physics.optics] 14 Feb 2025
+
+arXiv
+
+Strong field physics in open quantum systems
+
+Neda Boroumand,! Adam Thorpe,! Graeme Bart,! Andrew Parks,?, Mohamad
+Toutounji,? Giulio Vampa,* Thomas Brabec,!* and Lu Wang ({£3#))7
+‘Department of Physics, University of Ottawa, Ottawa, Ontario K1N 6N5, Canada
+2? Wyant College of Optical Sciences, University of Arizona, Tucson, Arizona, 85721, USA
+3 College of Science, Department of Chemistry, UAE University, Al-Ain, UAE
+
+* Joint Attosecond Science Laboratory, National Research Council of Canada and University of Ottawa,
+100 Sussex Drive, Ottawa, Ontario K1A OR6, Canada
+
+Dephasing is the loss of phase coherence due to the interaction of an electron with the environment.
+The most common approach to model dephasing in light-matter interaction is the relaxation time
+approximation. Surprisingly, its use in intense laser physics results in a pronounced failure, because
+ionization is highly overestimated. Here, this shortcoming is corrected by developing a strong field
+model in which the many-body environment is represented by a heat bath. Our model reveals
+that ionization enhancement and suppression by several orders of magnitude are still possible, how-
+ever only in more extreme parameter regimes. Our approach allows the integration of many-body
+physics into intense laser dynamics with minimal computational and mathematical complexity, thus
+facilitating the identification of novel effects in strong-field physics and attosecond science.
+
+Introduction
+
+Strong laser-matter interaction is commonly modeled as
+a closed quantum system with a single active electron
+[1, 2]. While this assumption is well justified for atomic
+gases, its validity is not so clear for denser materials, such
+as liquids and solids. A full many-body treatment of the
+non-perturbative dynamics of all electrons and nuclei is
+prohibitively difficult. Therefore, it is more practical to
+model dense materials as a single active electron within
+an open quantum system, where many-body effects are
+accounted for by interactions with the environment [3, 4].
+Due to its simplicity, the environment in intense laser-
+driven solids is mostly modeled in the relaxation time
+approximation [5, 6], where the effect of many-body dy-
+namics is replaced by a dephasing time T> [7-9]. Dephas-
+ing represents the destruction of the coherence between
+different one-electron eigenstates of the material, as a re-
+sult of many-body collisions.
+
+However, a simple calculation for an under-resonantly
+driven two-level system reveals questionable features of
+he relaxation time approximation [10]. Throughout this
+per, we refer to ionization as the laser-induced excita-
+ion of an electron from the valence |0) to the conduction
+1) band, as determined by conventional optical field ion-
+ization theory [11]. In Fig. la the ionization dynamics
+with dephasing described via the relaxation time approx-
+imation (yellow) and without dephasing (blue) are com-
+ared. It can be seen that the relaxation time approxi-
+mation predicts nine orders of magnitude ionization en-
+hancement at very moderate electric field strength. This
+is clearly unphysical according to experimental measure-
+ments. Though this overestimation of ionization may
+e mitigated by introducing a time-dependent relaxation
+ime [12, 13], the underlying issue is still not resolved. We
+erm the ionization enhancement caused by dephasing as
+dephasing ionization.
+
+Two Level System Overestimated lonization
+
+lo>
+
+\a Time
+
+lonization
+
+Two Band System External Heat Bath
+
+i> |
+So TEE Ee ?
+
+b Temperature
+
+Energy
+
+FIG. 1. Illustration of under-resonantly driven, open two-
+level/band systems. Panel a presents the two-level sys-
+tem (band gap E, = 3.51 eV) described by the relaxation
+time approximation. On the right-hand side ionization with
+(T2 = 8fs, yellow curve) and without dephasing (Tz = 0,
+lue curve) is compared. A moderate electric field strength
+Eo = 5x 10°V/m with photon energy ~ 0.39 eV (Ao = 3.2m)
+is chosen. See Supplement Fig.S3 for details. Panel b shows
+the two-band system coupled to a heat bath described via
+the spin-boson model. The heat bath is modeled using boson
+harmonic oscillator modes. As the temperature rises, boson
+modes with higher energies are engaged (gray curves).
+
+In short, dephasing ionization happens when the phase
+relation between the laser and the two-level system is
+disturbed. Therefore, the laser-driven virtual population
+of the excited state is transformed into real excitation
+ice. dephasing ionization. Here, the virtual excitation
+refers to the population that disappears after the laser
+pulse. The apparent shortcomings of the relaxation time
+approximation leave a gap between more complex and
+
+computationally demanding many-body approaches and
+oversimplified dephasing models commonly used in in-
+tense light-matter interaction.
+
+Furthermore, ionization is the first step in all strong
+field processes, such as material machining [14-16], peta-
+hertz electronics [17, 18], electron acceleration from nano
+emitters [19], and attosecond spectroscopy in atoms,
+molecules and solids [2, 20]. Due to the importance o:
+ionization, a deeper understanding of dephasing ioniza-
+tion is essential.
+
+As such, a more sophisticated model is needed tha
+ideally maintains most of the simplicity and wide appli-
+cability of the relaxation time approximation. We borrow
+inspiration from the field of open quantum systems and
+adopt one of its key achievements, the spin-boson model,
+which typically serves as a minimal model to describe the
+quantum dynamics of an electron under the influence o
+the environment [21-23]. Here, the spin-boson model is
+integrated into the semiconductor Bloch equations gov-
+erning intense laser solid-state physics. The electron dy-
+namics is represented by a single electron-hole, two-band
+model which is linearly coupled to its environment via
+bosonic harmonic oscillator modes, see Fig. 1b. The so-
+called strong field spin-boson (SFSB) model allows for a
+closed-form solution of the electron dynamics in an en-
+vironment and in the presence of an intense laser. We
+refer to the environment as a heat bath in the rest of the
+paper.
+
+The SFSB fixes the pathological ionization behavior
+displayed by the relaxation time approximation. Never-
+theless, numerical analysis of the SFSB equation reveals
+that ionization enhancement of up to a few orders of mag-
+nitude is still possible, but only at high temperatures.
+Interestingly, in the opposite low-temperature limit the
+heat bath can suppress ionization by up to a few orders of
+magnitude, which we term as dephasing suppressed ion-
+ization. This occurs when the electron and heat bath
+interact strongly.
+
+The SFSB model provides a distinctive approach to
+uncovering the physics of complex many-body systems
+with minimal computational and mathematical complex-
+ity. The predictive power of the SFSB approach can be
+progressively refined through either more detailed models
+or by fine-tuning the heat bath response through com-
+parison with experiments. We anticipate that the SFSB
+framework will facilitate the discovery of new phenomena
+in strong-field physics and attosecond science.
+
+Theory
+
+Our analysis starts with a single electron two-band sys-
+tem coupled to a bosonic heat bath via a linear interac-
+
+tion term, [24, 25]
+
+1 1
+H = —5E(Ki,t)o. + 5K, toe + SO hgh! bg
+qd
+
++02. 94 (by +03) . (1)
+
+q
+
+Here, E(t) is the laser electric field, the vector poten-
+tial is defined by —0,A = E, and K, = K + eA(t)/h.
+The canonical momentum K belongs to the shifted Bril-
+louin zone BZ. Further, Q(K:,t) = (2e/h)d(K;, t)E(¢)
+is a generalized Rabi frequency, e > 0 is the elemen-
+tary charge and fh is the Planck constant; d(A;,t) and
+€(K,,t) represent transition dipole and bandgap between
+conduction |1) and valence |0) band, respectively. The
+time dependence of these quantities arises from the mov-
+ing momentum frame. The Pauli matrices are denoted
+by o; (j = #,y,2). Finally, wg, bt by, and gy are the
+harmonic oscillator frequency, creation, and annihilation
+operators, and the coupling coefficient of a mode with
+momentum q, respectively.
+
+The coupling term between the heat bath and the two-
+band system appears exclusively in the diagonal terms of
+the Hamiltonian. Thus, it accounts only for dephasing,
+and not directly for heat-bath driven transitions between
+bands, i.e the off-diagonal terms. Nevertheless, due to the
+coupling of laser and heat bath driven dynamics [5, 26],
+dephasing does influence the overall ionization. In the
+high-temperature limit, multi-boson transitions between
+valence and conduction band could become relevant but
+are ignored here.
+
+The Hamiltonian shown in Eq.(1) can be further sim-
+plified. First, we perform a polaron transformation that
+diagonalizes the laser-free Hamiltonian [27]. This is fol-
+lowed by a change to the interaction picture, which re-
+sults in
+
+_ E(Ki,t)
+
+Ay = 2
+
+ot Shi Kt) (o.D" + oD) .
+(2)
+
+For a detailed derivation, see Supplementary Mate-
+rial, Section I. Here, o, = (02 +ioy)/2ando_ =
+(oz — toy) /2. The interactions with laser and heat bath
+are now described by a single term, with the shift opera-
+tor defined as D = exp {- 49a [bi (t) — b,(¢)] / (ey).
+
+The evolution of the density matrix is determined by
+the integration of the Liouville-Von Neumann equation
+with the Hamiltonian shown in Eq.(2). Initially, the
+valence band is fully occupied, the conduction band is
+empty, and the heat bath is in thermal equilibrium. A
+closed-form solution is obtained by using a Dyson expan-
+sion up to the second order. As we are only interested
+in the two-band system dynamics, the heat bath degrees
+of freedom are traced out (see Supplementary Material
+Sections II-III for details) [8, 24, 25, 28-35]. We found
