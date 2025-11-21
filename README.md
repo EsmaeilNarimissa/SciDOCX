@@ -231,8 +231,8 @@ export CUDA_VISIBLE_DEVICES="0"
 For comprehensive benchmarking results and academic evaluation, see:
 
 - **Evaluation Branch**: `git checkout evaluation-framework`
-- **Evaluation README**: [test/README.md](evaluation-framework/test/README.md)  
-- **Evaluation Record**: [PR #2](https://github.com/EsmaeilNarimissa/SciDOCX/pull/2)
+- **Evaluation README**: https://github.com/EsmaeilNarimissa/SciDOCX/blob/evaluation-framework/test/README.md
+- **Evaluation Notebook**: https://github.com/EsmaeilNarimissa/SciDOCX/blob/evaluation-framework/test/pipeline_test.ipynb
 
 The evaluation framework includes:
 - Cross-domain testing across 5 scientific disciplines
