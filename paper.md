@@ -2,11 +2,7 @@
 title: "SciDOCX: A multimodal scientific document conversion and retrieval pipeline"
 authors:
   - name: "Esmaeil Narimissa"
-    affiliation: 1
     orcid: "0000-0002-5665-4412"
-affiliations:
-  - name: "Department of Computer Science, University of Liverpool, Liverpool, United Kingdom"
-    index: 1
 date: "2025-11-19"
 bibliography: paper.bib
 tags:
@@ -17,12 +13,13 @@ tags:
 
 summary: |
   SciDOCX is presented as an open-source pipeline for converting complex scientific PDF documents into high-fidelity Markdown and DOCX files, together with a structured JSONL format that is suitable for multimodal retrieval-augmented generation workflows. The pipeline integrates DeepSeek-OCR [@deepseek-ocr] for text extraction, Pandoc [@pandoc] for layout reconstruction and Qwen2-VL [@qwen2-vl] for the automatic production of scientific figure descriptions. This design preserves equations, tables, figures and captions within their original context and provides outputs suitable for both human editing and downstream retrieval across scientific corpora. Evaluation on representative scientific articles shows that SciDOCX reduces word-level errors by a factor of about five relative to a baseline using Tesseract [@tesseract-ocr], while cross-domain tests on a set of arXiv papers demonstrate high structural coverage, accurate figure extraction and practical runtimes.
-
-statement_of_need: |
-  Scientific literature contains equations, tables and figures that convey essential information, yet these elements are often degraded or lost when processed by standard OCR systems. Existing tools tend to produce plain text or approximate layout reconstructions with limited preservation of multimodal elements, which restricts the reuse of scientific PDFs in retrieval, analysis and multimodal question answering. At the same time, research in retrieval-augmented generation and vision-language modelling requires structured representations that align textual and visual components with consistent metadata. A dedicated pipeline that preserves scientific structure while also generating retrieval-ready multimodal formats is therefore required.
-
-  SciDOCX addresses this need by combining a modern OCR backend with a vision-language model to create both editable artefacts and JSONL files suitable for multimodal indexing. The pipeline retains mathematical content, table structure and figure context, and supplements figure elements with concise descriptions. Evaluations across several scientific domains indicate that SciDOCX provides more complete structural recovery and lower transcription error rates than baselines based on Tesseract and pdfminer.six [@pdfminer]. The outputs therefore serve researchers who prepare multimodal corpora, develop question answering systems, or convert scientific PDFs into structured formats for downstream analysis.
 ---
+
+# Statement of need
+
+Scientific literature contains equations, tables and figures that convey essential information, yet these elements are often degraded or lost when processed by standard OCR systems. Existing tools tend to produce plain text or approximate layout reconstructions with limited preservation of multimodal elements, which restricts the reuse of scientific PDFs in retrieval, analysis and multimodal question answering. At the same time, research in retrieval-augmented generation and vision-language modelling requires structured representations that align textual and visual components with consistent metadata. A dedicated pipeline that preserves scientific structure while also generating retrieval-ready multimodal formats is therefore required.
+
+SciDOCX addresses this need by combining a modern OCR backend with a vision-language model to create both editable artefacts and JSONL files suitable for multimodal indexing. The pipeline retains mathematical content, table structure and figure context, and supplements figure elements with concise descriptions. Evaluations across several scientific domains indicate that SciDOCX provides more complete structural recovery and lower transcription error rates than baselines based on Tesseract and pdfminer.six [@pdfminer]. The outputs therefore serve researchers who prepare multimodal corpora, develop question answering systems, or convert scientific PDFs into structured formats for downstream analysis.
 
 # Software description
 
