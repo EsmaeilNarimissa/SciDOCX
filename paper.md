@@ -14,9 +14,11 @@ tags:
   - scientific document understanding
   - multimodal retrieval
   - open-source software
-summary: |
-  SciDOCX is presented as an open-source pipeline for converting complex scientific PDF documents into high-fidelity Markdown and DOCX files, together with a structured JSONL format that is suitable for multimodal retrieval-augmented generation workflows. The pipeline integrates DeepSeek-OCR [@deepseek-ocr] for text extraction, Pandoc [@pandoc] for layout reconstruction and Qwen2-VL [@qwen2-vl] for the automatic production of scientific figure descriptions. This design preserves equations, tables, figures and captions within their original context and provides outputs suitable for both human editing and downstream retrieval across scientific corpora. Evaluation on representative scientific articles shows that SciDOCX reduces word-level errors by a factor of about five relative to a baseline using Tesseract [@tesseract-ocr], while cross-domain tests on a set of arXiv papers demonstrate high structural coverage, accurate figure extraction and practical runtimes.
 ---
+
+# Summary
+
+SciDOCX is presented as an open-source pipeline for converting complex scientific PDF documents into high-fidelity Markdown and DOCX files, together with a structured JSONL format that is suitable for multimodal retrieval-augmented generation workflows. The pipeline integrates DeepSeek-OCR [@deepseek-ocr] for text extraction, Pandoc [@pandoc] for layout reconstruction and Qwen2-VL [@qwen2-vl] for the automatic production of scientific figure descriptions. This design preserves equations, tables, figures and captions within their original context and provides outputs suitable for both human editing and downstream retrieval across scientific corpora. Evaluation on representative scientific articles shows that SciDOCX reduces word-level errors by a factor of about five relative to a baseline using Tesseract [@tesseract-ocr], while cross-domain tests on a set of arXiv papers demonstrate high structural coverage, accurate figure extraction and practical runtimes.
 
 # Statement of need
 
